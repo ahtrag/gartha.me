@@ -10,7 +10,7 @@
     "lint": "biome check .",
     "format": "biome format --write .",
     "typecheck": "turbo run typecheck",
-    "deploy": "pnpm build && pnpm --filter @gartha/api exec wrangler deploy"
+    "deploy:cf": "pnpm build && pnpm --filter @gartha/api exec wrangler deploy"
   },
   "devDependencies": {
     "@biomejs/biome": "^1.9.4",

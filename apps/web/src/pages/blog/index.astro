@@ -18,10 +18,10 @@ const capitalize = (s: string) => s.charAt(0).toUpperCase() + s.slice(1);
       <span class="mono" style="font-size:14px;font-weight:700;color:var(--muted)">// quest log</span>
       <h1 class="display">Blog</h1>
     </div>
-    <div class="filters" role="tablist">
+    <div class="filters" role="group" aria-label="Filter posts by category">
       {
         cats.map((c) => (
-          <button class="display" role="tab" data-filter={c} aria-selected={c === "all"}>
+          <button class="display" data-filter={c} aria-pressed={c === "all"}>
             {capitalize(c)}
           </button>
         ))
@@ -53,16 +53,18 @@ const capitalize = (s: string) => s.charAt(0).toUpperCase() + s.slice(1);
     }
     {rest.map((p) => <PostCard post={p} />)}
   </div>
+  <p class="empty" hidden>No quests in this category yet.</p>
 </Site>
 
 <script>
+  import { applyFilter } from "../../scripts/filter";
+
   const buttons = document.querySelectorAll<HTMLButtonElement>("[data-filter]");
   const cards = document.querySelectorAll<HTMLElement>("[data-category]");
+  const empty = document.querySelector<HTMLElement>(".empty");
   for (const b of buttons) {
     b.addEventListener("click", () => {
-      const f = b.dataset.filter;
-      for (const x of buttons) x.setAttribute("aria-selected", String(x === b));
-      for (const c of cards) c.hidden = f !== "all" && c.dataset.category !== f;
+      applyFilter(buttons, cards, empty, b.dataset.filter ?? "all");
     });
   }
 </script>
@@ -85,6 +87,7 @@ const capitalize = (s: string) => s.charAt(0).toUpperCase() + s.slice(1);
   .filters {
     display: flex;
     gap: 10px;
+    flex-wrap: wrap;
   }
   .filters button {
     height: 44px;
@@ -98,10 +101,17 @@ const capitalize = (s: string) => s.charAt(0).toUpperCase() + s.slice(1);
     box-shadow: var(--shadow-card-sm);
     cursor: pointer;
   }
-  .filters button[aria-selected="true"] {
+  .filters button[aria-pressed="true"] {
     background: var(--blue);
     color: var(--paper);
     box-shadow: 0 4px 0 var(--blue-deep);
+  }
+  .empty {
+    margin: 36px 0 0;
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--muted);
+    text-align: center;
   }
   .grid {
     display: grid;

@@ -64,3 +64,6 @@ a:hover {
 .link-plain {
   text-decoration: none;
 }
+[hidden] {
+  display: none !important;
+}

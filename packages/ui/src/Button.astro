@@ -1,9 +1,20 @@
 ---
-interface Props { href: string; kind?: "primary" | "secondary" }
-const { href, kind = "primary" } = Astro.props;
-const cls = kind === "secondary" ? "btn btn--secondary" : "btn";
+interface Props { href: string; kind?: "primary" | "secondary"; disabled?: boolean }
+const { href, kind = "primary", disabled = false } = Astro.props;
+const cls = [
+  "btn",
+  kind === "secondary" ? "btn--secondary" : "",
+  disabled ? "btn--disabled" : "",
+]
+  .filter(Boolean)
+  .join(" ");
 ---
-<a href={href} class={`display ${cls}`}><slot /></a>
+<a
+  href={href}
+  class={`display ${cls}`}
+  aria-disabled={disabled ? "true" : undefined}
+  tabindex={disabled ? -1 : undefined}
+><slot /></a>
 
 <style>
   .btn {
@@ -48,5 +59,10 @@ const cls = kind === "secondary" ? "btn btn--secondary" : "btn";
   .btn:focus-visible {
     outline: 3px solid var(--blue-deep);
     outline-offset: 3px;
+  }
+
+  .btn--disabled {
+    opacity: 0.5;
+    pointer-events: none;
   }
 </style>

@@ -61,3 +61,6 @@ a:hover {
 .mono {
   font-family: var(--font-mono);
 }
+.link-plain {
+  text-decoration: none;
+}

@@ -8,9 +8,8 @@ import { formatDate, sortNewest } from "../lib/posts";
 const posts = sortNewest(await getCollection("blog"));
 const latest = posts[0];
 const stars = Array.from({ length: 5 }, (_, i) => i < profile.stars);
-const description = `${profile.intro.split(". ")[0]?.replace(/\.$/, "") ?? profile.intro}.`;
 ---
-<Site title="Home" description={description} active="home">
+<Site title="Home" description={profile.tagline} active="home">
   <Fragment slot="header-right">
     <div class="pills">
       <span class="pill mono" style="color:var(--gold-deep)"><i style="background:var(--gold)"></i>{posts.length} posts</span>
@@ -23,20 +22,20 @@ const description = `${profile.intro.split(". ")[0]?.replace(/\.$/, "") ?? profi
       <div><Badge>PLAYABLE</Badge></div>
       <h1 class="display">{profile.name}</h1>
       <p class="title">{profile.title}</p>
-      <div class="stars" aria-label={`${profile.stars} of 5 stars`}>
+      <div class="stars" role="img" aria-label={`${profile.stars} of 5 stars`}>
         {stars.map((on) => (
           <svg width="30" height="30" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2l2.9 6.3 6.9.8-5.1 4.7 1.4 6.8L12 17.3 5.9 20.6l1.4-6.8L2.2 9.1l6.9-.8z" fill={on ? "var(--gold)" : "var(--track)"}></path></svg>
         ))}
       </div>
       <div class="level">
         <span class="display" style="font-size:20px;font-weight:800;color:var(--muted)">LV <b style="font-size:36px;color:var(--ink)">{profile.level}</b></span>
-        <div class="bar"><div style={`width:${profile.xpPercent}%`}></div><span class="mono">XP</span></div>
+        <div class="bar" role="progressbar" aria-label="XP" aria-valuemin="0" aria-valuemax="100" aria-valuenow={profile.xpPercent}><div style={`width:${profile.xpPercent}%`}></div><span class="mono" aria-hidden="true">XP</span></div>
       </div>
       <p class="intro">{profile.intro}</p>
       <hr />
       <div class="ctas">
         <Button href="/blog">Read the blog</Button>
-        <Button href="#" kind="secondary">About me</Button>
+        <Button href="#" kind="secondary" disabled>About me</Button>
       </div>
     </div>
 
@@ -50,17 +49,17 @@ const description = `${profile.intro.split(". ")[0]?.replace(/\.$/, "") ?? profi
     </div>
 
     <div class="side">
-      <Card title="MAIN STACK">
+      <Card title="MAIN STACK" as="section">
         <div class="rows">
           {profile.stack.map((s) => (
-            <StatRow label={s.label} value={s.value} color={s.color}><span class="mono" style="color:#fff;font-size:16px;font-weight:700">{s.glyph}</span></StatRow>
+            <StatRow label={s.label} value={s.value} color={s.color}><span class="mono" style="color:var(--paper);font-size:16px;font-weight:700">{s.glyph}</span></StatRow>
           ))}
         </div>
       </Card>
-      <Card title="STATS">
+      <Card title="STATS" as="section">
         <div class="rows">
           {profile.stats.map((s) => (
-            <StatRow label={s.label} value={s.value} color={s.color}><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M13 3L4 14h7l-1 7 9-11h-7z"></path></svg></StatRow>
+            <StatRow label={s.label} value={s.value} color={s.color}><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="var(--paper)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M13 3L4 14h7l-1 7 9-11h-7z"></path></svg></StatRow>
           ))}
         </div>
       </Card>
@@ -70,7 +69,7 @@ const description = `${profile.intro.split(". ")[0]?.replace(/\.$/, "") ?? profi
   {latest && (
     <a class="latest" href={`/blog/${latest.id}`}>
       <span class="mono" style="color:var(--muted);font-size:14px;font-weight:700">// latest save</span>
-      <span class="chip"><i></i><b>{latest.data.title}</b><span class="mono" style="color:var(--muted);font-size:13px">{formatDate(latest.data.date)}</span></span>
+      <span class="chip"><i></i><b>{latest.data.title}</b><time class="mono" style="color:var(--muted);font-size:13px" datetime={formatDate(latest.data.date)}>{formatDate(latest.data.date)}</time></span>
     </a>
   )}
 </Site>
@@ -79,7 +78,7 @@ const description = `${profile.intro.split(". ")[0]?.replace(/\.$/, "") ?? profi
   .pills { display: flex; gap: 12px; }
   .pill { height: 48px; padding: 0 18px 0 8px; border-radius: var(--radius-md); background: var(--paper); display: flex; align-items: center; gap: 10px; box-shadow: var(--shadow-card-sm); font-size: 15px; font-weight: 700; }
   .pill i { width: 32px; height: 32px; border-radius: 10px; display: block; }
-  .hero { display: grid; grid-template-columns: 400px 1fr 340px; gap: 40px; align-items: start; margin-top: 40px; }
+  .hero { display: grid; grid-template-columns: minmax(0, 400px) minmax(304px, 1fr) minmax(0, 340px); gap: 40px; align-items: start; margin-top: 40px; }
   .profile { display: flex; flex-direction: column; gap: 22px; }
   h1 { margin: 0; font-size: 72px; line-height: 1; font-weight: 800; }
   .title { margin: 0; font-size: 22px; font-weight: 800; color: var(--blue); }
@@ -87,7 +86,7 @@ const description = `${profile.intro.split(". ")[0]?.replace(/\.$/, "") ?? profi
   .level { display: flex; align-items: center; gap: 14px; }
   .bar { flex: 1; height: 34px; border-radius: 12px; background: var(--track); position: relative; overflow: hidden; }
   .bar div { position: absolute; inset: 0 auto 0 0; background: var(--green); border-radius: 12px; }
-  .bar span { position: absolute; left: 50%; top: 7px; font-size: 15px; font-weight: 700; color: #fff; }
+  .bar span { position: absolute; left: 50%; top: 7px; font-size: 15px; font-weight: 700; color: var(--paper); }
   .intro { margin: 0; font-size: 19px; line-height: 1.5; font-weight: 600; color: var(--ink-2); text-wrap: pretty; }
   hr { border: 0; height: 2px; background: #fff; margin: 0; }
   .ctas { display: flex; gap: 14px; flex-wrap: wrap; }
@@ -96,9 +95,10 @@ const description = `${profile.intro.split(". ")[0]?.replace(/\.$/, "") ?? profi
   .commits { display: flex; align-items: center; gap: 10px; padding: 10px 26px; border-radius: 18px; background: var(--paper); box-shadow: 0 5px 0 var(--line); font-size: 22px; font-weight: 700; }
   .side { display: flex; flex-direction: column; gap: 22px; }
   .rows { display: flex; flex-direction: column; gap: 14px; }
-  .latest { display: flex; align-items: center; gap: 12px; margin-top: 48px; color: inherit; }
-  .chip { display: flex; align-items: center; gap: 10px; padding: 8px 16px; border-radius: 14px; background: var(--paper); box-shadow: var(--shadow-card-sm); font-size: 15px; }
+  .latest { display: flex; align-items: center; gap: 12px; margin-top: 48px; color: inherit; text-decoration: none; }
+  .chip { display: flex; align-items: center; gap: 10px; padding: 8px 16px; border-radius: 14px; background: var(--paper); box-shadow: var(--shadow-card-sm); font-size: 15px; transition: transform 0.1s ease, box-shadow 0.1s ease; }
   .chip i { width: 10px; height: 10px; border-radius: 5px; background: var(--green); }
-  @media (max-width: 1100px) { .hero { grid-template-columns: 1fr 1fr; } .side { grid-column: 1 / -1; flex-direction: row; } .side > * { flex: 1; } }
+  .latest:hover .chip { transform: translateY(2px); box-shadow: 0 2px 0 var(--line); }
+  @media (max-width: 1180px) { .hero { grid-template-columns: 1fr 1fr; } .side { grid-column: 1 / -1; flex-direction: row; } .side > * { flex: 1; } }
   @media (max-width: 720px) { .hero { grid-template-columns: 1fr; } .side { flex-direction: column; } h1 { font-size: 56px; } .pills { display: none; } }
 </style>

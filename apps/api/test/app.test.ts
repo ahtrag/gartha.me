@@ -16,6 +16,6 @@ describe("GET /", () => {
     const res = await SELF.fetch("http://gartha.me/");
     expect(res.status).toBe(200);
     const body = await res.text();
-    expect(body).toContain("placeholder");
+    expect(body).toContain("gartha.me");
   });
 });

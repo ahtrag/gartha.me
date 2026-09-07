@@ -1,4 +1,4 @@
-import { type Db, type Report, type ReportItem, jobRuns, reports, rowToReport } from "@gartha/db";
+import { type Db, type Report, type ReportItem, jobRuns, reports } from "@gartha/db";
 import { eq } from "drizzle-orm";
 
 export type ProducedReport = Omit<Report, "date" | "generatedAt">;
@@ -45,13 +45,17 @@ export async function runDailyReport({ db, now, trigger, producer }: RunOptions)
       .set({ status: "ok", finishedAt: new Date().toISOString() })
       .where(eq(jobRuns.id, run.id));
 
-    return rowToReport(row);
+    return { ...row, items: produced.items } satisfies Report;
   } catch (err) {
     const message = err instanceof Error ? err.message : String(err);
-    await db
-      .update(jobRuns)
-      .set({ status: "failed", error: message, finishedAt: new Date().toISOString() })
-      .where(eq(jobRuns.id, run.id));
+    try {
+      await db
+        .update(jobRuns)
+        .set({ status: "failed", error: message, finishedAt: new Date().toISOString() })
+        .where(eq(jobRuns.id, run.id));
+    } catch (updateErr) {
+      console.error("failed to mark job run as failed", { runId: run.id, updateErr });
+    }
     throw err;
   }
 }

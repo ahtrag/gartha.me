@@ -1,10 +1,12 @@
 /// <reference types="node" />
-import { join } from "node:path";
+import { URL, fileURLToPath } from "node:url";
 import { cloudflareTest, readD1Migrations } from "@cloudflare/vitest-pool-workers";
 import { defineConfig } from "vitest/config";
 
 export default defineConfig(async () => {
-  const migrations = await readD1Migrations(join(process.cwd(), "../../packages/db/migrations"));
+  const migrations = await readD1Migrations(
+    fileURLToPath(new URL("../../packages/db/migrations", import.meta.url)),
+  );
 
   return {
     test: {

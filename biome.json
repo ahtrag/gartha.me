@@ -10,7 +10,8 @@
       "**/.turbo/**",
       "design/**",
       "**/.astro/**",
-      "**/*.astro"
+      "**/*.astro",
+      "**/worker-configuration.d.ts"
     ]
   }
 }

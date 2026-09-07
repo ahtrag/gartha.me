@@ -4,7 +4,9 @@
   "private": true,
   "type": "module",
   "scripts": {
+    "predev": "wrangler d1 migrations apply gartha-me --local",
     "dev": "wrangler dev",
+    "dev:cron": "wrangler dev --test-scheduled",
     "typecheck": "tsc --noEmit",
     "test": "vitest run",
     "deploy": "wrangler deploy",

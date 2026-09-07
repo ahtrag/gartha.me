@@ -8,14 +8,17 @@ const app = createApp();
 
 export default {
   fetch: app.fetch,
-  async scheduled(controller, env, ctx) {
-    ctx.waitUntil(
-      runDailyReport({
+  async scheduled(controller, env) {
+    try {
+      await runDailyReport({
         db: createDb(env.DB),
         now: new Date(controller.scheduledTime),
         trigger: "cron",
         producer: stubProducer,
-      }).catch((err) => console.error("daily report failed", err)),
-    );
+      });
+    } catch (err) {
+      console.error("daily report failed", err);
+      throw err;
+    }
   },
 } satisfies ExportedHandler<Env>;

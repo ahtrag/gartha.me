@@ -1,0 +1,27 @@
+name = "gartha-me"
+main = "src/index.ts"
+compatibility_date = "2025-01-01"
+compatibility_flags = ["nodejs_compat"]
+account_id = "c8aa9726eeee38e3701009e0acd38071"
+
+[assets]
+directory = "../web/dist"
+binding = "ASSETS"
+not_found_handling = "404-page"
+run_worker_first = true
+
+[[d1_databases]]
+binding = "DB"
+database_name = "gartha-me"
+database_id = "00000000-0000-0000-0000-000000000000"
+migrations_dir = "../../packages/db/migrations"
+
+[triggers]
+crons = ["0 22 * * *"]
+
+[vars]
+ACCESS_TEAM_DOMAIN = ""
+ACCESS_AUD = ""
+
+[observability]
+enabled = true

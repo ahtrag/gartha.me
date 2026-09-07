@@ -4,6 +4,8 @@ import type { Env } from "../env";
 
 export type Verify = (token: string, team: string, aud: string) => Promise<{ email: string }>;
 
+export type AccessVariables = { accessEmail?: string };
+
 const jwksCache = new Map<string, ReturnType<typeof createRemoteJWKSet>>();
 
 export const joseVerify: Verify = async (token, team, aud) => {
@@ -13,13 +15,20 @@ export const joseVerify: Verify = async (token, team, aud) => {
     jwks = createRemoteJWKSet(new URL(`${issuer}/cdn-cgi/access/certs`));
     jwksCache.set(team, jwks);
   }
-  const { payload } = await jwtVerify(token, jwks, { issuer, audience: aud });
-  return { email: typeof payload.email === "string" ? payload.email : "" };
+  const { payload } = await jwtVerify(token, jwks, {
+    issuer,
+    audience: aud,
+    algorithms: ["RS256"],
+  });
+  if (typeof payload.email !== "string" || payload.email === "") {
+    throw new Error("no email claim");
+  }
+  return { email: payload.email };
 };
 
 export function accessGuard({ verify = joseVerify }: { verify?: Verify } = {}): MiddlewareHandler<{
   Bindings: Env;
-  Variables: { accessEmail?: string };
+  Variables: AccessVariables;
 }> {
   return async (c, next) => {
     const team = c.env.ACCESS_TEAM_DOMAIN;

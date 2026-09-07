@@ -4,16 +4,17 @@ import { Hono, type MiddlewareHandler } from "hono";
 import type { Env } from "../env";
 import { runDailyReport } from "../jobs/daily-report";
 import { stubProducer } from "../jobs/stub-producer";
+import type { AccessVariables } from "../middleware/access";
 
 const DATE_RE = /^\d{4}-\d{2}-\d{2}$/;
 const RUN_LIMIT = 10;
 
 type Opts = {
-  guards: MiddlewareHandler<{ Bindings: Env; Variables: { accessEmail?: string } }>[];
+  guards: MiddlewareHandler<{ Bindings: Env; Variables: AccessVariables }>[];
 };
 
 export function createAdminRouter({ guards }: Opts) {
-  const admin = new Hono<{ Bindings: Env; Variables: { accessEmail?: string } }>();
+  const admin = new Hono<{ Bindings: Env; Variables: AccessVariables }>();
   for (const g of guards) admin.use("*", g);
 
   async function recentRuns(db: ReturnType<typeof createDb>) {

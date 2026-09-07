@@ -1,6 +1,7 @@
 import { SELF, env } from "cloudflare:test";
 import { createDb, jobRuns } from "@gartha/db";
 import { beforeEach, describe, expect, it } from "vitest";
+import { createApp } from "../src/app";
 
 describe("accessGuard is mounted on the real app", () => {
   beforeEach(async () => {
@@ -19,5 +20,15 @@ describe("accessGuard is mounted on the real app", () => {
     const db = createDb(env.DB);
     const runs = await db.select().from(jobRuns);
     expect(runs).toHaveLength(0);
+  });
+
+  it("GET /api/admin/reports/latest is 401 with a malformed token when Access is configured", async () => {
+    const app = createApp();
+    const res = await app.request(
+      "/api/admin/reports/latest",
+      { headers: { "Cf-Access-Jwt-Assertion": "not-a-jwt" } },
+      { ...env, ACCESS_TEAM_DOMAIN: "team", ACCESS_AUD: "aud" },
+    );
+    expect(res.status).toBe(401);
   });
 });

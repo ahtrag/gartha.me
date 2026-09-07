@@ -18,7 +18,12 @@ const shadowByTone: Record<NonNullable<Props["tone"]>, string> = {
 };
 const bg = bgByTone[tone];
 const shadow = shadowByTone[tone];
-const titleId = title ? `card-${Math.random().toString(36).slice(2, 8)}` : undefined;
+const titleId = title
+  ? `card-${title
+      .toLowerCase()
+      .replace(/[^a-z0-9]+/g, "-")
+      .replace(/^-+|-+$/g, "")}`
+  : undefined;
 const Tag = as;
 ---
 <Tag
@@ -27,7 +32,7 @@ const Tag = as;
   aria-labelledby={titleId}
 >
   {title && (
-    <h2 id={titleId} class="display" style="margin:0;position:absolute;left:50%;top:-18px;transform:translateX(-50%);padding:8px 32px;border-radius:var(--radius-md);background:var(--bg-top);color:var(--muted);font-size:17px;font-weight:800;letter-spacing:.1em;white-space:nowrap">{title}</h2>
+    <h2 id={titleId} class="display" style="margin:0;position:absolute;left:50%;top:-18px;transform:translateX(-50%);padding:8px 32px;border-radius:var(--radius-md);background:var(--bg-top);color:var(--ink-2);font-size:17px;font-weight:800;letter-spacing:.1em;white-space:nowrap">{title}</h2>
   )}
   <slot />
 </Tag>

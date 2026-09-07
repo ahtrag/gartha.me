@@ -1,5 +1,9 @@
 ---
+// `color` is applied as white text on top of it — only the `*-deep` tokens
+// (e.g. `var(--purple-deep)`, `var(--blue-deep)`, `var(--gold-deep)`,
+// `var(--green-deep)`) reach WCAG AA contrast (4.5:1) for that white text.
+// The base tones (`var(--purple)`, `var(--blue)`, ...) are too light.
 interface Props { color?: string }
-const { color = "var(--purple)" } = Astro.props;
+const { color = "var(--purple-deep)" } = Astro.props;
 ---
-<span class="display" style={`display:inline-block;padding:6px 16px;background:${color};color:#fff;font-size:15px;font-weight:800;letter-spacing:.08em;clip-path:polygon(10% 0,100% 0,90% 100%,0 100%)`}><slot /></span>
+<span class="display" style={`display:inline-block;padding:6px 16px;background:${color};color:var(--paper);font-size:15px;font-weight:800;letter-spacing:.08em;clip-path:polygon(10% 0,100% 0,90% 100%,0 100%)`}><slot /></span>

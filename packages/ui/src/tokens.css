@@ -26,6 +26,11 @@
   --skin: #ffcfa8;
   --dark: #1f2447;
 
+  --blue-tint: #e6ebff;
+  --purple-tint: #f3e6ff;
+  --green-tint: #e3f9ec;
+  --green-text: #157a40;
+
   --radius-sm: 10px;
   --radius-md: 16px;
   --radius-lg: 26px;
@@ -46,7 +51,6 @@ body {
 
 a {
   color: var(--blue);
-  text-decoration: none;
 }
 a:hover {
   color: var(--blue-deep);

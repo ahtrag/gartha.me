@@ -1,11 +1,12 @@
 ---
-export type Category = "code" | "games" | "builds";
+import type { Category } from "./types";
+export type { Category } from "./types";
 interface Props { category: Category }
 const { category } = Astro.props;
 const tone = {
-  code: "background:#e6ebff;color:var(--blue)",
-  games: "background:#f3e6ff;color:var(--purple-deep)",
-  builds: "background:#e3f9ec;color:var(--green-deep)",
+  code: "background:var(--blue-tint);color:var(--blue)",
+  games: "background:var(--purple-tint);color:var(--purple-deep)",
+  builds: "background:var(--green-tint);color:var(--green-text)",
 }[category];
 ---
 <span class="mono" style={`display:inline-block;padding:4px 12px;border-radius:var(--radius-sm);font-size:13px;font-weight:700;${tone}`}>{category}</span>

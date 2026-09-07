@@ -5,3 +5,4 @@ export { default as Card } from "./Card.astro";
 export { default as Button } from "./Button.astro";
 export { default as StatRow } from "./StatRow.astro";
 export { default as CategoryChip } from "./CategoryChip.astro";
+export type { Variant, Category } from "./types";

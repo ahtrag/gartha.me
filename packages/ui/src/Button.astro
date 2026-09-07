@@ -1,8 +1,52 @@
 ---
 interface Props { href: string; kind?: "primary" | "secondary" }
 const { href, kind = "primary" } = Astro.props;
-const style = kind === "primary"
-  ? "background:var(--blue);color:#fff;box-shadow:var(--shadow-primary)"
-  : "background:var(--paper);color:var(--blue);box-shadow:0 7px 0 var(--line)";
+const cls = kind === "secondary" ? "btn btn--secondary" : "btn";
 ---
-<a href={href} class="display" style={`display:inline-flex;align-items:center;height:64px;padding:0 32px;border-radius:20px;font-size:22px;font-weight:800;${style}`}><slot /></a>
+<a href={href} class={`display ${cls}`}><slot /></a>
+
+<style>
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    height: 64px;
+    padding: 0 32px;
+    border-radius: 20px;
+    font-size: 22px;
+    font-weight: 800;
+    text-decoration: none;
+    background: var(--blue);
+    color: var(--paper);
+    box-shadow: var(--shadow-primary);
+    transition: transform 0.1s ease, box-shadow 0.1s ease;
+  }
+
+  .btn--secondary {
+    background: var(--paper);
+    color: var(--blue);
+    box-shadow: 0 7px 0 var(--line);
+  }
+
+  .btn:hover {
+    transform: translateY(2px);
+    box-shadow: 0 5px 0 var(--blue-deep);
+  }
+
+  .btn--secondary:hover {
+    box-shadow: 0 5px 0 var(--line);
+  }
+
+  .btn:active {
+    transform: translateY(5px);
+    box-shadow: 0 2px 0 var(--blue-deep);
+  }
+
+  .btn--secondary:active {
+    box-shadow: 0 2px 0 var(--line);
+  }
+
+  .btn:focus-visible {
+    outline: 3px solid var(--blue-deep);
+    outline-offset: 3px;
+  }
+</style>

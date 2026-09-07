@@ -1,0 +1,3 @@
+# Copy this file to .dev.vars (git-ignored) to configure local secrets for `wrangler dev`.
+ACCESS_TEAM_DOMAIN=
+ACCESS_AUD=

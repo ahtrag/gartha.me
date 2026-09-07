@@ -4,6 +4,9 @@ dist/
 .turbo/
 .env
 .env.*
+.dev.vars
+.dev.vars.*
+!.dev.vars.example
 .DS_Store
 design/gartha-me.html
 .astro/

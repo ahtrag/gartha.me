@@ -5,6 +5,7 @@ describe("GET /api/health", () => {
   it("returns ok with a timestamp", async () => {
     const res = await SELF.fetch("http://gartha.me/api/health");
     expect(res.status).toBe(200);
+    expect(res.headers.get("content-type")).toContain("application/json");
     const body = await res.json<{ ok: boolean; time: string }>();
     expect(body.ok).toBe(true);
     expect(new Date(body.time).toString()).not.toBe("Invalid Date");

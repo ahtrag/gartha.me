@@ -15,6 +15,10 @@ type Opts = {
 
 export function createAdminRouter({ guards }: Opts) {
   const admin = new Hono<{ Bindings: Env; Variables: AccessVariables }>();
+  admin.use("*", async (c, next) => {
+    await next();
+    c.res.headers.set("Cache-Control", "no-store");
+  });
   for (const g of guards) admin.use("*", g);
 
   async function recentRuns(db: ReturnType<typeof createDb>) {

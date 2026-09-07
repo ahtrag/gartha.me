@@ -78,6 +78,11 @@ describe("admin report routes", () => {
     expect(body.runs[0]?.id).toBeGreaterThan(body.runs[9]?.id ?? 0);
   });
 
+  it("sets Cache-Control: no-store on responses", async () => {
+    const res = await testApp().request("/api/admin/reports/latest", {}, env);
+    expect(res.headers.get("Cache-Control")).toBe("no-store");
+  });
+
   it("POST /reports/run creates today's report with a manual run", async () => {
     const res = await testApp().request("/api/admin/reports/run", { method: "POST" }, env);
     expect(res.status).toBe(200);

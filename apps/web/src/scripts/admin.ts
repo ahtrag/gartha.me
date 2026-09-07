@@ -59,6 +59,14 @@ export function showError(root: ParentNode, message: string): void {
   }
 }
 
+export class HttpError extends Error {
+  status: number;
+  constructor(message: string, status: number) {
+    super(message);
+    this.status = status;
+  }
+}
+
 async function getJson<T>(url: string, init?: RequestInit): Promise<T> {
   let res: Response;
   try {
@@ -80,13 +88,14 @@ async function getJson<T>(url: string, init?: RequestInit): Promise<T> {
 
   if (isJson) {
     const body = (await res.json().catch(() => ({}))) as { error?: string };
-    throw new Error(body.error ?? `request failed (${res.status})`);
+    throw new HttpError(body.error ?? `request failed (${res.status})`, res.status);
   }
-  throw new Error(`request failed (${res.status})`);
+  throw new HttpError(`request failed (${res.status})`, res.status);
 }
 
 export function mount(root: Document): void {
   let inFlight = false;
+  let hasReport = false;
   const runBtn = root.querySelector<HTMLButtonElement>('[data-action="run"]');
   const runLabel = runBtn?.textContent ?? "Run now";
   const summaryEl = el<HTMLElement>(root, "summary");
@@ -105,9 +114,16 @@ export function mount(root: Document): void {
       const err = el<HTMLElement>(root, "error");
       if (err) err.hidden = true;
       renderReport(root, await getJson<ReportPayload>(path, init));
+      hasReport = true;
     } catch (e) {
-      showError(root, e instanceof Error ? e.message : "something went wrong");
-      if (summaryEl) summaryEl.textContent = "Could not load the report.";
+      if (!hasReport && e instanceof HttpError && e.status === 404) {
+        // Empty state: nothing generated yet, not an error.
+        if (summaryEl)
+          summaryEl.textContent = "No reports yet. Click Run now to generate today's report.";
+      } else {
+        showError(root, e instanceof Error ? e.message : "something went wrong");
+        if (!hasReport && summaryEl) summaryEl.textContent = "Could not load the report.";
+      }
     } finally {
       inFlight = false;
       if (runBtn) {

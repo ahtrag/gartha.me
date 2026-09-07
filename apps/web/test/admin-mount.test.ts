@@ -162,6 +162,45 @@ describe("mount", () => {
     expect(fetchMock).toHaveBeenCalledTimes(2);
   });
 
+  it("shows an empty state instead of an error when there are no reports yet", async () => {
+    const fetchMock = vi.fn().mockResolvedValue(jsonResponse({ error: "no reports yet" }, 404));
+    vi.stubGlobal("fetch", fetchMock);
+
+    mount(document);
+
+    await vi.waitFor(() => {
+      const err = document.querySelector('[data-field="error"]') as HTMLElement;
+      expect(err.hidden).toBe(true);
+      expect(document.querySelector('[data-field="summary"]')?.textContent).toBe(
+        "No reports yet. Click Run now to generate today's report.",
+      );
+    });
+  });
+
+  it("keeps the summary intact when a later action errors after a successful render", async () => {
+    const fetchMock = vi
+      .fn()
+      .mockResolvedValueOnce(jsonResponse(payload))
+      .mockResolvedValueOnce(jsonResponse({ error: "boom" }, 500));
+    vi.stubGlobal("fetch", fetchMock);
+
+    mount(document);
+    await vi.waitFor(() =>
+      expect(document.querySelector('[data-field="summary"]')?.textContent).toBe("Quiet inbox."),
+    );
+
+    const runBtn = document.querySelector<HTMLButtonElement>('[data-action="run"]');
+    await vi.waitFor(() => expect(runBtn?.disabled).toBe(false));
+    runBtn?.click();
+
+    await vi.waitFor(() => {
+      const err = document.querySelector('[data-field="error"]') as HTMLElement;
+      expect(err.hidden).toBe(false);
+      expect(err.textContent).toBe("boom");
+    });
+    expect(document.querySelector('[data-field="summary"]')?.textContent).toBe("Quiet inbox.");
+  });
+
   it("shows a session-expired message for a non-JSON 200 response", async () => {
     const fetchMock = vi
       .fn()

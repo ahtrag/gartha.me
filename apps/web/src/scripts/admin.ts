@@ -44,7 +44,7 @@ export function renderReport(root: ParentNode, { report, runs }: ReportPayload):
       ...runs.map((r) => {
         const li = document.createElement("li");
         li.dataset.status = r.status;
-        li.textContent = `${r.startedAt.slice(11, 19)} ${r.trigger} · ${r.status}${r.error ? ` · ${r.error}` : ""}`;
+        li.textContent = `${r.startedAt.slice(0, 10)} ${r.startedAt.slice(11, 19)}Z ${r.trigger} · ${r.status}${r.error ? ` · ${r.error}` : ""}`;
         return li;
       }),
     );

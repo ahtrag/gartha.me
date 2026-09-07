@@ -3,7 +3,7 @@ import { createDb } from "@gartha/db";
 import { Hono } from "hono";
 import { beforeEach, describe, expect, it } from "vitest";
 import type { Env } from "../src/env";
-import { runDailyReport } from "../src/jobs/daily-report";
+import { runDailyReport, toDateKey } from "../src/jobs/daily-report";
 import { stubProducer } from "../src/jobs/stub-producer";
 import { createAdminRouter } from "../src/routes/admin";
 
@@ -31,11 +31,12 @@ describe("admin report routes", () => {
   });
 
   it("GET /reports/latest returns the newest report", async () => {
+    // seed dates are UTC T22:00:00; each shifts one day forward in Asia/Jakarta.
     await seed(["2026-09-05", "2026-09-07", "2026-09-06"]);
     const res = await testApp().request("/api/admin/reports/latest", {}, env);
     expect(res.status).toBe(200);
     const body = await res.json<{ report: { date: string }; runs: unknown[] }>();
-    expect(body.report.date).toBe("2026-09-07");
+    expect(body.report.date).toBe("2026-09-08");
     expect(body.runs.length).toBeGreaterThan(0);
   });
 
@@ -46,7 +47,7 @@ describe("admin report routes", () => {
 
   it("GET /reports/:date returns that date or 404", async () => {
     await seed(["2026-09-06"]);
-    const ok = await testApp().request("/api/admin/reports/2026-09-06", {}, env);
+    const ok = await testApp().request("/api/admin/reports/2026-09-07", {}, env);
     expect(ok.status).toBe(200);
     const missing = await testApp().request("/api/admin/reports/2026-09-01", {}, env);
     expect(missing.status).toBe(404);
@@ -58,7 +59,7 @@ describe("admin report routes", () => {
     await seed(["2026-09-05", "2026-09-07"]);
     const res = await testApp().request("/api/admin/reports", {}, env);
     const body = await res.json<{ dates: string[] }>();
-    expect(body.dates).toEqual(["2026-09-07", "2026-09-05"]);
+    expect(body.dates).toEqual(["2026-09-08", "2026-09-06"]);
   });
 
   it("GET /reports/latest caps runs at 10, newest first", async () => {
@@ -81,7 +82,7 @@ describe("admin report routes", () => {
     const res = await testApp().request("/api/admin/reports/run", { method: "POST" }, env);
     expect(res.status).toBe(200);
     const body = await res.json<{ report: { date: string }; runs: { trigger: string }[] }>();
-    expect(body.report.date).toBe(new Date().toISOString().slice(0, 10));
+    expect(body.report.date).toBe(toDateKey(new Date()));
     expect(body.runs[0]?.trigger).toBe("manual");
   });
 });

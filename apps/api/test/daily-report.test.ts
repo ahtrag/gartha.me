@@ -2,14 +2,26 @@ import { env } from "cloudflare:test";
 import { createDb, jobRuns, reports } from "@gartha/db";
 import { desc } from "drizzle-orm";
 import { beforeEach, describe, expect, it } from "vitest";
-import { type ReportProducer, runDailyReport } from "../src/jobs/daily-report";
+import { type ReportProducer, runDailyReport, toDateKey } from "../src/jobs/daily-report";
 import { stubProducer } from "../src/jobs/stub-producer";
 
+// 22:00 UTC is 05:00 the next day in Asia/Jakarta (UTC+7), so this fixture's
+// report date key lands on 2026-09-08, not 2026-09-07.
 const NOW = new Date("2026-09-07T22:00:00Z");
 
 async function resetDb() {
   await env.DB.exec("DELETE FROM reports; DELETE FROM job_runs;");
 }
+
+describe("toDateKey", () => {
+  it("formats in Asia/Jakarta, rolling over past 17:00 UTC", () => {
+    expect(toDateKey(new Date("2026-09-07T22:00:00Z"))).toBe("2026-09-08");
+  });
+
+  it("stays on the same day before the Jakarta rollover", () => {
+    expect(toDateKey(new Date("2026-09-07T16:59:59Z"))).toBe("2026-09-07");
+  });
+});
 
 describe("runDailyReport", () => {
   beforeEach(resetDb);
@@ -18,12 +30,12 @@ describe("runDailyReport", () => {
     const db = createDb(env.DB);
     const report = await runDailyReport({ db, now: NOW, trigger: "cron", producer: stubProducer });
 
-    expect(report.date).toBe("2026-09-07");
+    expect(report.date).toBe("2026-09-08");
     expect(report.summary).toContain("not yet connected");
 
     const stored = await db.select().from(reports);
     expect(stored).toHaveLength(1);
-    expect(stored[0]?.date).toBe("2026-09-07");
+    expect(stored[0]?.date).toBe("2026-09-08");
 
     const runs = await db.select().from(jobRuns);
     expect(runs).toHaveLength(1);

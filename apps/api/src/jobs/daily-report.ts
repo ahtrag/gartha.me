@@ -13,8 +13,20 @@ export type RunOptions = {
   producer: ReportProducer;
 };
 
+// Assumption: the owner is in Asia/Jakarta (UTC+7). The daily report's date key
+// (and the cron trigger time, see wrangler.toml) are anchored to that zone rather
+// than UTC so "today's report" lines up with the owner's local calendar day.
+export const REPORT_TIMEZONE = "Asia/Jakarta";
+
+const dateKeyFormatter = new Intl.DateTimeFormat("en-CA", {
+  timeZone: REPORT_TIMEZONE,
+  year: "numeric",
+  month: "2-digit",
+  day: "2-digit",
+});
+
 export function toDateKey(d: Date): string {
-  return d.toISOString().slice(0, 10);
+  return dateKeyFormatter.format(d);
 }
 
 export async function runDailyReport({ db, now, trigger, producer }: RunOptions): Promise<Report> {

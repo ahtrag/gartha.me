@@ -14,7 +14,7 @@ describe("scheduled", () => {
     const ctx = createExecutionContext();
     const event = createScheduledController({
       scheduledTime: Date.parse("2026-09-07T22:00:00Z"),
-      cron: "0 22 * * *",
+      cron: "0 0 * * *",
     });
     await worker.scheduled(event, env);
     await waitOnExecutionContext(ctx);

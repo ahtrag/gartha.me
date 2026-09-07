@@ -28,11 +28,14 @@ const payload: ReportPayload = {
 describe("renderReport", () => {
   it("fills the counts, summary, items and run log", () => {
     document.body.innerHTML = `
-      <span data-field="date"></span><span data-field="emailsRead"></span><span data-field="needsReply"></span>
+      <span data-field="date"></span><span data-field="emailsRead" aria-label="not loaded"></span><span data-field="needsReply"></span>
       <span data-field="billsDue"></span><span data-field="archived"></span><p data-field="summary"></p>
       <ul data-field="items"></ul><ul data-field="runs"></ul>`;
     renderReport(document, payload);
     expect(document.querySelector('[data-field="emailsRead"]')?.textContent).toBe("47");
+    expect(document.querySelector('[data-field="emailsRead"]')?.hasAttribute("aria-label")).toBe(
+      false,
+    );
     expect(document.querySelector('[data-field="summary"]')?.textContent).toBe("Quiet inbox.");
     expect(document.querySelectorAll('[data-field="items"] li')).toHaveLength(1);
     expect(document.querySelector('[data-field="runs"]')?.textContent).toContain("cron");

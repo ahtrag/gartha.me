@@ -9,7 +9,10 @@ function el<T extends Element>(root: ParentNode, field: string): T | null {
 export function renderReport(root: ParentNode, { report, runs }: ReportPayload): void {
   const set = (f: string, v: string | number) => {
     const e = el<HTMLElement>(root, f);
-    if (e) e.textContent = String(v);
+    if (e) {
+      e.textContent = String(v);
+      e.removeAttribute("aria-label");
+    }
   };
   set("date", report.date);
   set("emailsRead", report.emailsRead);

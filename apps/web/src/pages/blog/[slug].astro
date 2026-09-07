@@ -1,0 +1,176 @@
+---
+import { getCollection, render } from "astro:content";
+import Site from "../../layouts/Site.astro";
+import { Avatar } from "@gartha/ui";
+import { formatDate, neighbours, readTime, sortNewest } from "../../lib/posts";
+
+export async function getStaticPaths() {
+  const sorted = sortNewest(await getCollection("blog"));
+  return sorted.map((post) => ({ params: { slug: post.id }, props: { post, ...neighbours(sorted, post.id) } }));
+}
+const { post, prev, next } = Astro.props;
+const { Content } = await render(post);
+---
+
+<Site title={post.data.title} description={post.data.description} active="blog">
+  <Fragment slot="header-right"><a class="back link-plain" href="/blog">← Back to quest log</a></Fragment>
+  <article>
+    <header class="hd">
+      <div style="display:flex;gap:8px"><span class="mono tag">{post.data.category}</span></div>
+      <h1 class="display">{post.data.title}</h1>
+      <div class="by">
+        <Avatar /><b>Gartha</b>
+        <time class="mono" datetime={formatDate(post.data.date)}>{formatDate(post.data.date)}</time>
+        <span class="mono">{readTime(post.body ?? "")} min read</span>
+      </div>
+    </header>
+    <div class="body"><Content /></div>
+    <nav class="pn">
+      {
+        prev ? (
+          <a class="link-plain" href={`/blog/${prev.id}`}>
+            <small class="mono">PREVIOUS QUEST</small>
+            <b>{prev.data.title}</b>
+          </a>
+        ) : (
+          <span />
+        )
+      }
+      {
+        next ? (
+          <a class="r link-plain" href={`/blog/${next.id}`}>
+            <small class="mono">NEXT QUEST</small>
+            <b>{next.data.title}</b>
+          </a>
+        ) : (
+          <span />
+        )
+      }
+    </nav>
+  </article>
+</Site>
+
+<style>
+  .back {
+    height: 48px;
+    padding: 0 20px;
+    border-radius: var(--radius-md);
+    background: var(--paper);
+    display: flex;
+    align-items: center;
+    font-weight: 800;
+    box-shadow: var(--shadow-card-sm);
+  }
+  article {
+    max-width: 920px;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    gap: 28px;
+  }
+  .hd {
+    position: relative;
+    padding: 40px 44px;
+    border-radius: var(--radius-xl);
+    background: var(--blue);
+    box-shadow: 0 8px 0 var(--blue-deep);
+    color: var(--paper);
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+    overflow: hidden;
+  }
+  .tag {
+    padding: 4px 12px;
+    border-radius: var(--radius-sm);
+    background: var(--blue-deep);
+    font-size: 13px;
+    font-weight: 700;
+  }
+  h1 {
+    margin: 0;
+    font-size: 46px;
+    line-height: 1.08;
+    font-weight: 800;
+    max-width: 700px;
+    text-wrap: pretty;
+  }
+  .by {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    font-size: 14px;
+    color: #b9c4f5;
+  }
+  .by b {
+    color: var(--paper);
+    font-size: 16px;
+  }
+  .body {
+    padding: 44px 48px;
+    border-radius: var(--radius-xl);
+    background: var(--paper);
+    box-shadow: var(--shadow-card);
+    font-size: 19px;
+    line-height: 1.7;
+    font-weight: 600;
+    color: #3a4173;
+  }
+  .body :global(h2) {
+    font-family: var(--font-display);
+    font-size: 30px;
+    line-height: 1.15;
+    font-weight: 800;
+    color: var(--ink);
+    margin: 32px 0 8px;
+  }
+  .body :global(pre) {
+    border-radius: 20px;
+    padding: 22px 24px;
+    font-size: 15px;
+    line-height: 1.65;
+    overflow-x: auto;
+  }
+  .body :global(code) {
+    font-family: var(--font-mono);
+  }
+  .pn {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+  }
+  .pn a {
+    padding: 20px 24px;
+    border-radius: 22px;
+    background: var(--paper);
+    box-shadow: 0 6px 0 var(--line);
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    color: var(--ink);
+  }
+  .pn a.r {
+    text-align: right;
+  }
+  .pn small {
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--muted-2);
+  }
+  .pn b {
+    font-size: 16px;
+    font-weight: 800;
+  }
+  @media (max-width: 720px) {
+    .hd,
+    .body {
+      padding: 28px 24px;
+    }
+    h1 {
+      font-size: 34px;
+    }
+    .pn {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>

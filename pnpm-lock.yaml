@@ -70,6 +70,9 @@ importers:
       '@astrojs/check':
         specifier: ^0.9.10
         version: 0.9.10(prettier@3.9.6)(typescript@5.9.3)
+      '@gartha/db':
+        specifier: workspace:*
+        version: link:../../packages/db
       jsdom:
         specifier: ^30.0.1
         version: 30.0.1

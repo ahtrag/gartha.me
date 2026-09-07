@@ -16,6 +16,7 @@
   },
   "devDependencies": {
     "@astrojs/check": "^0.9.10",
+    "@gartha/db": "workspace:*",
     "jsdom": "^30.0.1",
     "typescript": "^5.7.0",
     "vitest": "^5.0.0"

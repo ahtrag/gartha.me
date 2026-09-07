@@ -1,0 +1,401 @@
+---
+import "@gartha/ui/tokens.css";
+import { Avatar } from "@gartha/ui";
+import { FONTS_HREF } from "../../lib/fonts";
+
+const nav = [{ label: "Daily report", active: true }, { label: "Posts" }, { label: "Inbox rules" }, { label: "Settings" }];
+const tiles = [
+  { field: "emailsRead", label: "EMAILS READ", color: "var(--blue)" },
+  { field: "needsReply", label: "NEEDS REPLY", color: "var(--coral)" },
+  { field: "billsDue", label: "BILLS DUE", color: "var(--gold)" },
+  { field: "archived", label: "AUTO ARCHIVED", color: "var(--green)" },
+];
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="robots" content="noindex" />
+    <title>Admin · gartha.me</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link rel="stylesheet" href={FONTS_HREF} />
+  </head>
+  <body>
+    <div class="shell">
+      <aside>
+        <div class="brand">
+          <span class="logo mono">&lt;/&gt;</span>
+          <div>
+            <b class="display">gartha.me</b>
+            <span class="mono">admin</span>
+          </div>
+        </div>
+        <nav>
+          {
+            nav.map((n) => (
+              <a class="link-plain" href="#" aria-current={n.active ? "page" : undefined} aria-disabled={n.active ? undefined : "true"}>
+                {n.label}
+              </a>
+            ))
+          }
+        </nav>
+        <div class="me">
+          <Avatar />
+          <div>
+            <b>Gartha</b>
+            <span class="mono" style="color:var(--green)">online</span>
+          </div>
+        </div>
+      </aside>
+
+      <main>
+        <div class="top">
+          <div>
+            <span class="mono" style="color:var(--muted);font-size:14px;font-weight:700">// today's quest board</span>
+            <h1 class="display">Daily report</h1>
+          </div>
+          <div class="actions">
+            <label class="date mono">Date <input type="date" data-action="date" /></label>
+            <button class="run display" data-action="run">Run now</button>
+          </div>
+        </div>
+
+        <p class="err" data-field="error" hidden></p>
+
+        <div class="tiles">
+          {
+            tiles.map((t) => (
+              <div class="tile">
+                <i style={`background:${t.color}`} />
+                <div>
+                  <span class="mono">{t.label}</span>
+                  <b class="display" data-field={t.field}>–</b>
+                </div>
+              </div>
+            ))
+          }
+        </div>
+
+        <div class="cols">
+          <section class="card">
+            <div class="row">
+              <h2 class="display">Summary</h2>
+              <span class="mono" data-field="date"></span>
+            </div>
+            <p class="summary" data-field="summary">Loading…</p>
+            <ul class="items" data-field="items"></ul>
+          </section>
+          <section class="card dark">
+            <div class="row">
+              <h2 class="display">Cron log</h2>
+              <i class="dot" />
+            </div>
+            <ul class="runs mono" data-field="runs"></ul>
+          </section>
+        </div>
+      </main>
+    </div>
+    <script>
+      import { mount } from "../../scripts/admin";
+      mount(document);
+    </script>
+  </body>
+</html>
+
+<style>
+  .shell {
+    display: flex;
+    min-height: 100vh;
+  }
+  aside {
+    width: 260px;
+    padding: 28px 20px;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    gap: 28px;
+    background: var(--paper);
+    box-shadow: 4px 0 0 var(--line);
+  }
+  .brand {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 0 8px;
+  }
+  .brand div {
+    display: flex;
+    flex-direction: column;
+  }
+  .brand b {
+    font-size: 20px;
+  }
+  .brand span {
+    font-size: 12px;
+    color: var(--muted);
+  }
+  .logo {
+    width: 44px;
+    height: 44px;
+    border-radius: 14px;
+    background: var(--blue);
+    color: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 5px 0 var(--blue-deep);
+    font-weight: 700;
+  }
+  nav {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+  nav a {
+    height: 48px;
+    padding: 0 14px;
+    border-radius: 14px;
+    display: flex;
+    align-items: center;
+    font-weight: 700;
+    color: var(--muted);
+  }
+  nav a[aria-current="page"] {
+    background: var(--blue);
+    color: #fff;
+    font-weight: 800;
+    box-shadow: 0 4px 0 var(--blue-deep);
+  }
+  nav a[aria-disabled="true"] {
+    opacity: 0.5;
+    pointer-events: none;
+  }
+  .me {
+    margin-top: auto;
+    padding: 16px;
+    border-radius: 18px;
+    background: var(--bg-top);
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  .me div {
+    display: flex;
+    flex-direction: column;
+    font-size: 15px;
+  }
+  .me span {
+    font-size: 12px;
+    font-weight: 700;
+  }
+  main {
+    flex: 1;
+    padding: 32px 40px;
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+    min-width: 0;
+  }
+  .top {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 16px;
+    flex-wrap: wrap;
+  }
+  h1 {
+    margin: 0;
+    font-size: 40px;
+    line-height: 1;
+    font-weight: 800;
+  }
+  .actions {
+    display: flex;
+    gap: 12px;
+    align-items: center;
+  }
+  .date {
+    height: 48px;
+    padding: 0 16px;
+    border-radius: 16px;
+    background: var(--paper);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    box-shadow: var(--shadow-card-sm);
+    font-size: 15px;
+    font-weight: 700;
+  }
+  .date input {
+    border: 0;
+    font: inherit;
+    background: transparent;
+  }
+  .run {
+    height: 48px;
+    padding: 0 20px;
+    border: 0;
+    border-radius: 16px;
+    background: var(--green);
+    color: #fff;
+    font-size: 16px;
+    font-weight: 800;
+    box-shadow: 0 4px 0 var(--green-deep);
+    cursor: pointer;
+  }
+  .err {
+    margin: 0;
+    padding: 14px 18px;
+    border-radius: 16px;
+    background: #ffe3e6;
+    color: #b52e2e;
+    font-weight: 700;
+  }
+  .tiles {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 18px;
+  }
+  .tile {
+    padding: 18px 20px;
+    border-radius: 22px;
+    background: var(--paper);
+    box-shadow: 0 6px 0 var(--line);
+    display: flex;
+    align-items: center;
+    gap: 14px;
+  }
+  .tile i {
+    width: 48px;
+    height: 48px;
+    border-radius: 15px;
+    flex-shrink: 0;
+  }
+  .tile div {
+    display: flex;
+    flex-direction: column;
+  }
+  .tile span {
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--muted);
+  }
+  .tile b {
+    font-size: 28px;
+    line-height: 1;
+  }
+  .cols {
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    gap: 24px;
+  }
+  .card {
+    padding: 28px 30px;
+    border-radius: var(--radius-lg);
+    background: var(--paper);
+    box-shadow: var(--shadow-card);
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+  }
+  .card.dark {
+    background: var(--ink);
+    color: #b9c4f5;
+    box-shadow: 0 8px 0 var(--dark);
+  }
+  .card.dark h2 {
+    color: #fff;
+  }
+  .row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  h2 {
+    margin: 0;
+    font-size: 24px;
+    font-weight: 800;
+  }
+  .summary {
+    margin: 0;
+    font-size: 17px;
+    line-height: 1.65;
+    font-weight: 600;
+    color: #3a4173;
+  }
+  .items {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+  .items li {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    padding: 14px 16px;
+    border-radius: 18px;
+    background: var(--bg-top);
+  }
+  .items li b {
+    font-size: 16px;
+  }
+  .items li span {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--muted);
+  }
+  .items li[data-priority="high"] b::before {
+    content: "! ";
+    color: var(--coral);
+  }
+  .runs {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    font-size: 13px;
+  }
+  .runs li[data-status="failed"] {
+    color: var(--coral);
+  }
+  .runs li[data-status="ok"]::before {
+    content: "● ";
+    color: var(--green);
+  }
+  .dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 5px;
+    background: var(--green);
+  }
+  @media (max-width: 900px) {
+    .shell {
+      flex-direction: column;
+    }
+    aside {
+      width: auto;
+      flex-direction: row;
+      align-items: center;
+    }
+    nav {
+      flex-direction: row;
+    }
+    .me {
+      display: none;
+    }
+    .tiles {
+      grid-template-columns: 1fr 1fr;
+    }
+    .cols {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>

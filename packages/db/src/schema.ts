@@ -1,3 +1,4 @@
+// Keep in sync with migrations/*.sql. The SQL migrations are the source of truth.
 import { integer, sqliteTable, text } from "drizzle-orm/sqlite-core";
 
 export const reports = sqliteTable("reports", {

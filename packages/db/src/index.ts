@@ -10,16 +10,8 @@ export type ReportItem = {
   priority: "high" | "normal" | "low";
 };
 
-export type Report = {
-  date: string;
-  generatedAt: string;
-  emailsRead: number;
-  needsReply: number;
-  billsDue: number;
-  archived: number;
-  summary: string;
-  items: ReportItem[];
-};
+type ReportRow = typeof schema.reports.$inferSelect;
+export type Report = Omit<ReportRow, "items"> & { items: ReportItem[] };
 
 export type JobRun = typeof schema.jobRuns.$inferSelect;
 

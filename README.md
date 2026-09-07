@@ -12,6 +12,11 @@ Personal site, blog, and admin on Cloudflare Workers.
 `predev` script before starting `wrangler dev`. To exercise the cron job locally, use
 `pnpm --filter @gartha/api dev:cron` (`wrangler dev --test-scheduled`).
 
+Copy `apps/api/.dev.vars.example` to `apps/api/.dev.vars` (git-ignored) to configure
+local secrets. Setting `ACCESS_DEV_EMAIL` there bypasses the Cloudflare Access guard
+for requests on `localhost`/`127.0.0.1` only, so you can open `/admin` locally without
+a real Access login.
+
 ## Test / build / deploy
 
     pnpm test            # turbo run test: api (vitest 4 + @cloudflare/vitest-pool-workers),

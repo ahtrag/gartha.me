@@ -46,4 +46,40 @@ describe("accessGuard", () => {
     } as Env);
     expect(res.status).toBe(503);
   });
+
+  it("bypasses Access on localhost when ACCESS_DEV_EMAIL is set", async () => {
+    const app = new Hono<{ Bindings: Env }>();
+    app.use("*", accessGuard({ verify: async () => ({ email: "x" }) }));
+    app.get("/x", (c) => c.text("secret"));
+    const res = await app.request("http://localhost/x", {}, {
+      ACCESS_TEAM_DOMAIN: "",
+      ACCESS_AUD: "",
+      ACCESS_DEV_EMAIL: "dev@example.com",
+    } as Env);
+    expect(res.status).toBe(200);
+  });
+
+  it("bypass is refused on a non-localhost hostname even with ACCESS_DEV_EMAIL set", async () => {
+    const app = new Hono<{ Bindings: Env }>();
+    app.use("*", accessGuard({ verify: async () => ({ email: "x" }) }));
+    app.get("/x", (c) => c.text("secret"));
+    const res = await app.request("http://gartha.me/x", {}, {
+      ACCESS_TEAM_DOMAIN: "",
+      ACCESS_AUD: "",
+      ACCESS_DEV_EMAIL: "dev@example.com",
+    } as Env);
+    expect(res.status).toBe(503);
+  });
+
+  it("has no effect when ACCESS_DEV_EMAIL is empty", async () => {
+    const app = new Hono<{ Bindings: Env }>();
+    app.use("*", accessGuard({ verify: async () => ({ email: "x" }) }));
+    app.get("/x", (c) => c.text("secret"));
+    const res = await app.request("http://localhost/x", {}, {
+      ACCESS_TEAM_DOMAIN: "",
+      ACCESS_AUD: "",
+      ACCESS_DEV_EMAIL: "",
+    } as Env);
+    expect(res.status).toBe(503);
+  });
 });

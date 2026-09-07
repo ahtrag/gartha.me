@@ -31,6 +31,14 @@ export function accessGuard({ verify = joseVerify }: { verify?: Verify } = {}): 
   Variables: AccessVariables;
 }> {
   return async (c, next) => {
+    const devEmail = c.env.ACCESS_DEV_EMAIL;
+    const hostname = new URL(c.req.url).hostname;
+    if (devEmail && (hostname === "localhost" || hostname === "127.0.0.1")) {
+      c.set("accessEmail", devEmail);
+      await next();
+      return;
+    }
+
     const team = c.env.ACCESS_TEAM_DOMAIN;
     const aud = c.env.ACCESS_AUD;
     if (!team || !aud) return c.json({ error: "access not configured" }, 503);

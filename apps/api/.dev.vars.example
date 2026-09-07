@@ -1,3 +1,8 @@
 # Copy this file to .dev.vars (git-ignored) to configure local secrets for `wrangler dev`.
 ACCESS_TEAM_DOMAIN=
 ACCESS_AUD=
+
+# Local-only: bypasses the Access guard when the request host is localhost or
+# 127.0.0.1, so you can open the admin page in dev without a real Access login.
+# Never set this outside local dev; it has no effect on any other hostname.
+ACCESS_DEV_EMAIL=you@example.com

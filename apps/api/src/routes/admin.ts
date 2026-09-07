@@ -8,10 +8,12 @@ import { stubProducer } from "../jobs/stub-producer";
 const DATE_RE = /^\d{4}-\d{2}-\d{2}$/;
 const RUN_LIMIT = 10;
 
-type Opts = { guards: MiddlewareHandler<{ Bindings: Env }>[] };
+type Opts = {
+  guards: MiddlewareHandler<{ Bindings: Env; Variables: { accessEmail?: string } }>[];
+};
 
 export function createAdminRouter({ guards }: Opts) {
-  const admin = new Hono<{ Bindings: Env }>();
+  const admin = new Hono<{ Bindings: Env; Variables: { accessEmail?: string } }>();
   for (const g of guards) admin.use("*", g);
 
   async function recentRuns(db: ReturnType<typeof createDb>) {

@@ -61,6 +61,22 @@ describe("admin report routes", () => {
     expect(body.dates).toEqual(["2026-09-07", "2026-09-05"]);
   });
 
+  it("GET /reports/latest caps runs at 10, newest first", async () => {
+    for (let i = 0; i < 12; i++) {
+      await runDailyReport({
+        db: createDb(env.DB),
+        now: new Date("2026-09-07T22:00:00Z"),
+        trigger: "manual",
+        producer: stubProducer,
+      });
+    }
+    const res = await testApp().request("/api/admin/reports/latest", {}, env);
+    expect(res.status).toBe(200);
+    const body = await res.json<{ runs: { id: number }[] }>();
+    expect(body.runs.length).toBe(10);
+    expect(body.runs[0]?.id).toBeGreaterThan(body.runs[9]?.id ?? 0);
+  });
+
   it("POST /reports/run creates today's report with a manual run", async () => {
     const res = await testApp().request("/api/admin/reports/run", { method: "POST" }, env);
     expect(res.status).toBe(200);

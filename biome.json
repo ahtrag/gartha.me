@@ -4,6 +4,13 @@
   "formatter": { "indentStyle": "space", "indentWidth": 2, "lineWidth": 100 },
   "linter": { "enabled": true, "rules": { "recommended": true } },
   "files": {
-    "ignore": ["**/dist/**", "**/.wrangler/**", "**/.turbo/**", "design/**", "**/.astro/**"]
+    "ignore": [
+      "**/dist/**",
+      "**/.wrangler/**",
+      "**/.turbo/**",
+      "design/**",
+      "**/.astro/**",
+      "**/*.astro"
+    ]
   }
 }

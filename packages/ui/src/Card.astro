@@ -1,0 +1,10 @@
+---
+interface Props { title?: string; tone?: "paper" | "blue" | "dark"; class?: string }
+const { title, tone = "paper", class: cls } = Astro.props;
+const bg = { paper: "var(--paper)", blue: "var(--blue)", dark: "var(--ink)" }[tone];
+const shadow = { paper: "var(--shadow-card)", blue: "0 8px 0 var(--blue-deep)", dark: "0 8px 0 var(--dark)" }[tone];
+---
+<section class={cls} style={`position:relative;padding:${title ? "42px 26px 24px" : "28px"};border-radius:var(--radius-lg);background:${bg};box-shadow:${shadow}`}>
+  {title && <div class="display" style="position:absolute;left:50%;top:-18px;transform:translateX(-50%);padding:8px 32px;border-radius:var(--radius-md);background:var(--bg-top);color:var(--muted);font-size:17px;font-weight:800;letter-spacing:.1em;white-space:nowrap">{title}</div>}
+  <slot />
+</section>

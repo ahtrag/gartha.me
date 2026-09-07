@@ -1,0 +1,8 @@
+---
+interface Props { href: string; kind?: "primary" | "secondary" }
+const { href, kind = "primary" } = Astro.props;
+const style = kind === "primary"
+  ? "background:var(--blue);color:#fff;box-shadow:var(--shadow-primary)"
+  : "background:var(--paper);color:var(--blue);box-shadow:0 7px 0 var(--line)";
+---
+<a href={href} class="display" style={`display:inline-flex;align-items:center;height:64px;padding:0 32px;border-radius:20px;font-size:22px;font-weight:800;${style}`}><slot /></a>

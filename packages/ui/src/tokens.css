@@ -1,0 +1,59 @@
+:root {
+  --font-display: "Baloo 2", "Trebuchet MS", system-ui, sans-serif;
+  --font-body: "Nunito", "Trebuchet MS", system-ui, sans-serif;
+  --font-mono: "JetBrains Mono", Menlo, monospace;
+
+  --ink: #2f3561;
+  --ink-2: #4a5187;
+  --muted: #6b72a3;
+  --muted-2: #9aa0c7;
+  --paper: #ffffff;
+  --bg-top: #eef1fc;
+  --bg-bottom: #dfe5fa;
+  --line: #cdd5f3;
+  --track: #c3caf0;
+
+  --blue: #3b5bdb;
+  --blue-deep: #2f49b8;
+  --green: #2ecc71;
+  --green-deep: #1a8a4a;
+  --coral: #ff5f6d;
+  --orange: #ff8c42;
+  --gold: #ffb020;
+  --gold-deep: #b26a00;
+  --purple: #c86dff;
+  --purple-deep: #8a3fc2;
+  --skin: #ffcfa8;
+  --dark: #1f2447;
+
+  --radius-sm: 10px;
+  --radius-md: 16px;
+  --radius-lg: 26px;
+  --radius-xl: 28px;
+
+  --shadow-card: 0 8px 0 var(--line);
+  --shadow-card-sm: 0 4px 0 var(--line);
+  --shadow-primary: 0 7px 0 var(--blue-deep);
+}
+
+body {
+  margin: 0;
+  font-family: var(--font-body);
+  color: var(--ink);
+  background: linear-gradient(180deg, var(--bg-top) 0%, var(--bg-bottom) 100%);
+  min-height: 100vh;
+}
+
+a {
+  color: var(--blue);
+  text-decoration: none;
+}
+a:hover {
+  color: var(--blue-deep);
+}
+.display {
+  font-family: var(--font-display);
+}
+.mono {
+  font-family: var(--font-mono);
+}

@@ -1,0 +1,22 @@
+{
+  "name": "@gartha/ui",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "exports": {
+    ".": "./src/index.ts",
+    "./tokens.css": "./src/tokens.css",
+    "./*.astro": "./src/*.astro"
+  },
+  "scripts": {
+    "test": "vitest run",
+    "typecheck": "astro check"
+  },
+  "peerDependencies": { "astro": "^7.0.0" },
+  "devDependencies": {
+    "@astrojs/check": "^0.9.10",
+    "astro": "^7.3.1",
+    "typescript": "^5.7.0",
+    "vitest": "^5.0.0"
+  }
+}

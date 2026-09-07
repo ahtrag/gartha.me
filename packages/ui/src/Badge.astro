@@ -1,0 +1,5 @@
+---
+interface Props { color?: string }
+const { color = "var(--purple)" } = Astro.props;
+---
+<span class="display" style={`display:inline-block;padding:6px 16px;background:${color};color:#fff;font-size:15px;font-weight:800;letter-spacing:.08em;clip-path:polygon(10% 0,100% 0,90% 100%,0 100%)`}><slot /></span>

@@ -1,0 +1,130 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@600;700;800&family=Nunito:wght@500;600;700;800&family=JetBrains+Mono:wght@500;700&display=swap">
+  <style>
+    body { margin: 0; font-family: 'Nunito', 'Trebuchet MS', system-ui, sans-serif; color: #2f3561; }
+    a { color: #3b5bdb; text-decoration: none; } a:hover { color: #2f49b8; }
+    .display { font-family: 'Baloo 2', 'Trebuchet MS', system-ui, sans-serif; }
+    .mono { font-family: 'JetBrains Mono', 'Menlo', monospace; }
+  </style>
+</helmet>
+<div style="width: 1440px; height: 1700px; position: relative; overflow: hidden; background: linear-gradient(180deg, #eef1fc 0%, #dfe5fa 100%);">
+
+  <div style="position: absolute; left: 0; top: 0; width: 1440px; display: flex; align-items: center; justify-content: space-between; padding: 28px 56px; box-sizing: border-box;">
+    <div style="display: flex; align-items: center; gap: 14px;">
+      <div style="width: 48px; height: 48px; border-radius: 16px; background: #3b5bdb; display: flex; align-items: center; justify-content: center; box-shadow: 0 6px 0 #2f49b8;">
+        <span class="mono" style="color: #ffffff; font-size: 18px; font-weight: 700;">&lt;/&gt;</span>
+      </div>
+      <span class="display" style="font-size: 26px; font-weight: 800; color: #2f3561;">gartha.me</span>
+    </div>
+    <div style="display: flex; align-items: center; gap: 10px;">
+      <div style="height: 48px; padding: 0 22px; border-radius: 16px; display: flex; align-items: center; font-weight: 700; font-size: 16px; color: #6b72a3;">Home</div>
+      <div style="height: 48px; padding: 0 22px; border-radius: 16px; background: #ffffff; display: flex; align-items: center; font-weight: 800; font-size: 16px; color: #3b5bdb; box-shadow: 0 4px 0 #cdd5f3;">Blog</div>
+      <div style="height: 48px; padding: 0 22px; border-radius: 16px; display: flex; align-items: center; font-weight: 700; font-size: 16px; color: #6b72a3;">Projects</div>
+    </div>
+    <div style="height: 48px; padding: 0 20px 0 12px; border-radius: 16px; background: #ffffff; display: flex; align-items: center; gap: 10px; box-shadow: 0 4px 0 #cdd5f3;">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#3b5bdb" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M15 6l-6 6 6 6"></path></svg>
+      <span style="font-size: 15px; font-weight: 800; color: #3b5bdb;">Back to quest log</span>
+    </div>
+  </div>
+
+  <div style="position: absolute; left: 260px; top: 130px; width: 920px; display: flex; flex-direction: column; gap: 28px;">
+
+    <div style="position: relative; padding: 40px 44px; border-radius: 28px; background: #3b5bdb; box-shadow: 0 8px 0 #2f49b8; display: flex; flex-direction: column; gap: 18px; overflow: hidden;">
+      <div style="display: flex; gap: 8px;">
+        <div class="mono" style="padding: 4px 12px; border-radius: 10px; background: #2f49b8; color: #ffffff; font-size: 13px; font-weight: 700;">code</div>
+        <div class="mono" style="padding: 4px 12px; border-radius: 10px; background: #2f49b8; color: #ffffff; font-size: 13px; font-weight: 700;">cloudflare</div>
+      </div>
+      <h1 class="display" style="margin: 0; font-size: 46px; line-height: 1.08; font-weight: 800; color: #ffffff; max-width: 700px; text-wrap: pretty;">Why I moved my side projects to Cloudflare Workers</h1>
+      <div style="display: flex; align-items: center; gap: 18px;">
+        <div style="display: flex; align-items: center; gap: 10px;">
+          <div style="width: 40px; height: 40px; border-radius: 13px; background: #ffcfa8; overflow: hidden; display: flex; align-items: flex-end; justify-content: center;">
+            <svg width="34" height="34" viewBox="20 20 200 140" fill="none">
+              <rect x="52" y="30" width="136" height="120" rx="36" fill="#ffcfa8"></rect>
+              <path d="M52 78 C52 40 76 24 120 24 C164 24 188 40 188 78 L188 84 C170 62 150 60 120 62 C90 60 70 62 52 84 Z" fill="#2f3561"></path>
+              <rect x="86" y="88" width="14" height="22" rx="7" fill="#2f3561"></rect>
+              <rect x="140" y="88" width="14" height="22" rx="7" fill="#2f3561"></rect>
+              <path d="M108 126 Q120 134 132 126" stroke="#2f3561" stroke-width="5" stroke-linecap="round"></path>
+            </svg>
+          </div>
+          <span style="font-size: 16px; font-weight: 800; color: #ffffff;">Gartha</span>
+        </div>
+        <span class="mono" style="font-size: 14px; font-weight: 700; color: #b9c4f5;">[DATE]</span>
+        <span class="mono" style="font-size: 14px; font-weight: 700; color: #b9c4f5;">8 min read</span>
+      </div>
+      <div style="position: absolute; right: -30px; top: -30px; width: 200px; height: 200px; border-radius: 60px; background: #ffffff; opacity: 0.06; transform: rotate(20deg);"></div>
+    </div>
+
+    <div style="padding: 44px 48px; border-radius: 28px; background: #ffffff; box-shadow: 0 8px 0 #cdd5f3; display: flex; flex-direction: column; gap: 22px;">
+      <p style="margin: 0; font-size: 19px; line-height: 1.7; font-weight: 600; color: #3a4173; text-wrap: pretty;">For years every side project started the same way: pick a VPS, harden it, forget about it, then find out six months later that the box has been unpatched the whole time. I wanted the fun part without the ops part.</p>
+      <p style="margin: 0; font-size: 19px; line-height: 1.7; font-weight: 600; color: #3a4173; text-wrap: pretty;">Workers gave me that. The site, the API, the cron job that reads my inbox every morning, and the database all live in one account and deploy with one command.</p>
+
+      <h2 class="display" style="margin: 12px 0 0; font-size: 30px; line-height: 1.15; font-weight: 800; display: flex; align-items: center; gap: 12px;">
+        <span style="width: 12px; height: 12px; border-radius: 4px; background: #2ecc71; transform: rotate(45deg); display: inline-block;"></span>
+        The whole deploy is one file
+      </h2>
+      <p style="margin: 0; font-size: 19px; line-height: 1.7; font-weight: 600; color: #3a4173; text-wrap: pretty;">Here is the entire config. Static assets for the Astro build, a D1 binding, and a cron trigger for the daily report.</p>
+
+      <div style="border-radius: 20px; background: #2f3561; overflow: hidden;">
+        <div style="display: flex; align-items: center; justify-content: space-between; padding: 12px 18px; background: #1f2447;">
+          <div style="display: flex; align-items: center; gap: 8px;">
+            <div style="width: 12px; height: 12px; border-radius: 6px; background: #ff5f6d;"></div>
+            <div style="width: 12px; height: 12px; border-radius: 6px; background: #ffb020;"></div>
+            <div style="width: 12px; height: 12px; border-radius: 6px; background: #2ecc71;"></div>
+          </div>
+          <span class="mono" style="font-size: 13px; font-weight: 700; color: #9aa0c7;">wrangler.toml</span>
+        </div>
+        <pre class="mono" style="margin: 0; padding: 22px 24px; font-size: 15px; line-height: 1.65; color: #dfe5fa; white-space: pre;"><span style="color: #c86dff;">name</span> = <span style="color: #2ecc71;">"gartha-me"</span>
+<span style="color: #c86dff;">main</span> = <span style="color: #2ecc71;">"apps/api/src/index.ts"</span>
+
+[<span style="color: #ffb020;">assets</span>]
+<span style="color: #c86dff;">directory</span> = <span style="color: #2ecc71;">"apps/web/dist"</span>
+
+[[<span style="color: #ffb020;">d1_databases</span>]]
+<span style="color: #c86dff;">binding</span> = <span style="color: #2ecc71;">"DB"</span>
+
+[<span style="color: #ffb020;">triggers</span>]
+<span style="color: #c86dff;">crons</span> = [<span style="color: #2ecc71;">"0 22 * * *"</span>]</pre>
+      </div>
+
+      <p style="margin: 0; font-size: 19px; line-height: 1.7; font-weight: 600; color: #3a4173; text-wrap: pretty;">That cron line is the whole scheduler. No systemd, no container, no "is the box still up" anxiety.</p>
+
+      <div style="display: flex; gap: 16px; padding: 22px 24px; border-radius: 20px; background: #eef1fc;">
+        <div style="width: 44px; height: 44px; border-radius: 14px; background: #ffb020; display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l1.8 5.5H20l-4.6 3.4 1.8 5.6L12 14l-5.2 3.5 1.8-5.6L4 8.5h6.2z"></path></svg>
+        </div>
+        <div style="display: flex; flex-direction: column; gap: 4px;">
+          <span class="display" style="font-size: 18px; font-weight: 800;">Loot drop</span>
+          <span style="font-size: 16px; line-height: 1.55; font-weight: 600; color: #4a5187;">The free tier gives you 100k requests a day. A personal site will not get close. Spend the money on the domain and nothing else.</span>
+        </div>
+      </div>
+    </div>
+
+    <div style="display: flex; align-items: center; justify-content: space-between; gap: 20px;">
+      <div style="flex-grow: 1; padding: 20px 24px; border-radius: 22px; background: #ffffff; box-shadow: 0 6px 0 #cdd5f3; display: flex; align-items: center; gap: 14px;">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#6b72a3" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M15 6l-6 6 6 6"></path></svg>
+        <div style="display: flex; flex-direction: column; gap: 2px;">
+          <span class="mono" style="font-size: 12px; font-weight: 700; color: #9aa0c7;">PREVIOUS QUEST</span>
+          <span style="font-size: 16px; font-weight: 800;">Ranked is just a distributed system with bad retries</span>
+        </div>
+      </div>
+      <div style="flex-grow: 1; padding: 20px 24px; border-radius: 22px; background: #ffffff; box-shadow: 0 6px 0 #cdd5f3; display: flex; align-items: center; justify-content: flex-end; gap: 14px; text-align: right;">
+        <div style="display: flex; flex-direction: column; gap: 2px;">
+          <span class="mono" style="font-size: 12px; font-weight: 700; color: #9aa0c7;">NEXT QUEST</span>
+          <span style="font-size: 16px; font-weight: 800;">Building a daily email report bot on a free tier</span>
+        </div>
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#6b72a3" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"></path></svg>
+      </div>
+    </div>
+  </div>
+</div>
+</x-dc>
+</body>
+</html>

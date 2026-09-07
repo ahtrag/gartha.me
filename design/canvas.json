@@ -1,0 +1,12 @@
+{
+  "artboards": [
+    { "file": "Main.dc.html", "x": 0, "y": 0, "w": 1440, "h": 900, "title": "Home" },
+    { "file": "Blog.dc.html", "x": 1560, "y": 0, "w": 1440, "h": 1000, "title": "Blog list" },
+    { "file": "Post.dc.html", "x": 0, "y": 1160, "w": 1440, "h": 1700, "title": "Blog post" },
+    { "file": "Admin.dc.html", "x": 1560, "y": 1160, "w": 1440, "h": 900, "title": "Admin · daily report" }
+  ],
+  "annotations": [
+    { "id": "brief", "x": 0, "y": -170, "w": 520, "text": "gartha.me — character-select direction.\nBracketed values like [DATE], [GAME], [N] are yours to fill. Post titles, read times and report contents are sample copy." }
+  ],
+  "launch": { "view": "canvas" }
+}

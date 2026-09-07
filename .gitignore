@@ -1,0 +1,8 @@
+node_modules/
+dist/
+.wrangler/
+.turbo/
+.env
+.env.*
+.DS_Store
+design/gartha-me.html

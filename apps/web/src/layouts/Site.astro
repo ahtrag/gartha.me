@@ -48,7 +48,7 @@ const nav: { key: "home" | "blog" | "projects"; href: string; label: string; dis
         </a>
         <nav>
           {nav.map((n) => (
-            <a href={n.href} aria-current={n.key === active ? "page" : undefined} aria-disabled={n.disabled ? "true" : undefined}>{n.label}</a>
+            <a href={n.href} aria-current={n.key === active ? "page" : undefined} aria-disabled={n.disabled ? "true" : undefined} tabindex={n.disabled ? -1 : undefined}>{n.label}</a>
           ))}
         </nav>
         <slot name="header-right" />

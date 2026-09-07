@@ -57,28 +57,66 @@ export function showError(root: ParentNode, message: string): void {
 }
 
 async function getJson<T>(url: string, init?: RequestInit): Promise<T> {
-  const res = await fetch(url, init);
-  if (!res.ok) {
+  let res: Response;
+  try {
+    res = await fetch(url, init);
+  } catch (e) {
+    if (e instanceof TypeError) throw new Error("could not reach the API");
+    throw e;
+  }
+
+  const contentType = res.headers.get("content-type") ?? "";
+  const isJson = contentType.includes("application/json");
+
+  if (res.status < 400) {
+    if (res.redirected || !isJson) {
+      throw new Error("session expired, reload the page to sign in again");
+    }
+    return res.json() as Promise<T>;
+  }
+
+  if (isJson) {
     const body = (await res.json().catch(() => ({}))) as { error?: string };
     throw new Error(body.error ?? `request failed (${res.status})`);
   }
-  return res.json() as Promise<T>;
+  throw new Error(`request failed (${res.status})`);
 }
 
 export function mount(root: Document): void {
+  let inFlight = false;
+  const runBtn = root.querySelector<HTMLButtonElement>('[data-action="run"]');
+  const runLabel = runBtn?.textContent ?? "Run now";
+  const summaryEl = el<HTMLElement>(root, "summary");
+  const summaryCard = summaryEl?.closest("section") ?? null;
+
   const load = async (path: string, init?: RequestInit) => {
+    if (inFlight) return;
+    inFlight = true;
+    if (runBtn) {
+      runBtn.disabled = true;
+      runBtn.setAttribute("aria-busy", "true");
+      runBtn.textContent = "Running…";
+    }
+    summaryCard?.setAttribute("aria-busy", "true");
     try {
       const err = el<HTMLElement>(root, "error");
       if (err) err.hidden = true;
       renderReport(root, await getJson<ReportPayload>(path, init));
     } catch (e) {
       showError(root, e instanceof Error ? e.message : "something went wrong");
+      if (summaryEl) summaryEl.textContent = "Could not load the report.";
+    } finally {
+      inFlight = false;
+      if (runBtn) {
+        runBtn.disabled = false;
+        runBtn.removeAttribute("aria-busy");
+        runBtn.textContent = runLabel;
+      }
+      summaryCard?.removeAttribute("aria-busy");
     }
   };
 
-  root
-    .querySelector('[data-action="run"]')
-    ?.addEventListener("click", () => load("/api/admin/reports/run", { method: "POST" }));
+  runBtn?.addEventListener("click", () => load("/api/admin/reports/run", { method: "POST" }));
   root.querySelector<HTMLInputElement>('[data-action="date"]')?.addEventListener("change", (ev) => {
     const v = (ev.target as HTMLInputElement).value;
     if (v) load(`/api/admin/reports/${v}`);

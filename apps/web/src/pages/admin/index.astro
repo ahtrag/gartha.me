@@ -36,7 +36,13 @@ const tiles = [
         <nav>
           {
             nav.map((n) => (
-              <a class="link-plain" href="#" aria-current={n.active ? "page" : undefined} aria-disabled={n.active ? undefined : "true"}>
+              <a
+                class="link-plain"
+                href="#"
+                aria-current={n.active ? "page" : undefined}
+                aria-disabled={n.active ? undefined : "true"}
+                tabindex={n.active ? undefined : -1}
+              >
                 {n.label}
               </a>
             ))
@@ -63,7 +69,7 @@ const tiles = [
           </div>
         </div>
 
-        <p class="err" data-field="error" hidden></p>
+        <p class="err" data-field="error" role="alert" hidden></p>
 
         <div class="tiles">
           {
@@ -72,7 +78,7 @@ const tiles = [
                 <i style={`background:${t.color}`} />
                 <div>
                   <span class="mono">{t.label}</span>
-                  <b class="display" data-field={t.field}>–</b>
+                  <b class="display" data-field={t.field} aria-label="not loaded" />
                 </div>
               </div>
             ))
@@ -80,7 +86,7 @@ const tiles = [
         </div>
 
         <div class="cols">
-          <section class="card">
+          <section class="card" aria-live="polite">
             <div class="row">
               <h2 class="display">Summary</h2>
               <span class="mono" data-field="date"></span>

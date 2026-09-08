@@ -24,10 +24,12 @@ describe("accessGuard is mounted on the real app", () => {
 
   it("GET /api/admin/reports/latest is 401 with a malformed token when Access is configured", async () => {
     const app = createApp();
+    // Full URL on the real host and no dev email, so a local .dev.vars cannot
+    // trigger the localhost bypass and mask a guard regression.
     const res = await app.request(
-      "/api/admin/reports/latest",
+      "http://gartha.me/api/admin/reports/latest",
       { headers: { "Cf-Access-Jwt-Assertion": "not-a-jwt" } },
-      { ...env, ACCESS_TEAM_DOMAIN: "team", ACCESS_AUD: "aud" },
+      { ...env, ACCESS_TEAM_DOMAIN: "team", ACCESS_AUD: "aud", ACCESS_DEV_EMAIL: undefined },
     );
     expect(res.status).toBe(401);
   });

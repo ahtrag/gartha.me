@@ -5,9 +5,9 @@
   "type": "module",
   "scripts": {
     "predev": "mkdir -p ../web/dist && wrangler d1 migrations apply gartha-me --local",
-    "dev": "wrangler dev",
+    "dev": "wrangler dev --host localhost",
     "cf:typegen": "wrangler types",
-    "dev:cron": "wrangler dev --test-scheduled",
+    "dev:cron": "wrangler dev --host localhost --test-scheduled",
     "typecheck": "tsc --noEmit",
     "test": "vitest run",
     "deploy": "wrangler deploy",

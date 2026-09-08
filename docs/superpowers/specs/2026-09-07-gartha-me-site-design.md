@@ -93,12 +93,12 @@ gartha.me/
     db/                 Drizzle schema, migrations, typed client
   design/               .dc.html mockups (kept as reference)
   docs/superpowers/     specs and plans
-  package.json          pnpm workspaces
+  package.json          bun workspaces
   turbo.json
   biome.json
 ```
 
-Tooling: pnpm workspaces, Turborepo, TypeScript strict, Biome for lint
+Tooling: Bun workspaces, Turborepo, TypeScript strict, Biome for lint
 and format, Vitest for tests, Wrangler for local dev and deploy.
 
 ## Components
@@ -257,10 +257,10 @@ Drizzle is used for typed queries only.
 
 ## Deployment
 
-- Local: `pnpm dev` runs Astro dev and `wrangler dev` side by side.
+- Local: `bun run dev` runs Astro dev and `wrangler dev` side by side.
   Wrangler serves the API and a local D1.
 - Production: Cloudflare Workers Builds watches `main`, runs
-  `pnpm build`, then `wrangler deploy`. D1 migrations run as a build
+  `bun run build`, then `wrangler deploy`. D1 migrations run as a build
   step.
 - Custom domain: the Worker is bound to gartha.me and www.gartha.me
   with a redirect from www to apex.

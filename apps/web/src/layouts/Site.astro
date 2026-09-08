@@ -1,5 +1,6 @@
 ---
 import "@gartha/ui/tokens.css";
+import { Logo } from "@gartha/ui";
 import { FONTS_HREF } from "../lib/fonts";
 interface Props {
   title: string;
@@ -23,6 +24,9 @@ const nav: { key: "home" | "blog" | "projects"; href: string; label: string; dis
     <title>{title} · gartha.me</title>
     {description && <meta name="description" content={description} />}
     <link rel="canonical" href={canonicalUrl} />
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <link rel="icon" href="/favicon-32.png" type="image/png" sizes="32x32" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link rel="stylesheet" href={FONTS_HREF} />
@@ -30,7 +34,6 @@ const nav: { key: "home" | "blog" | "projects"; href: string; label: string; dis
       .wrap { max-width: 1248px; margin: 0 auto; padding: 0 24px; }
       header { display: flex; align-items: center; justify-content: space-between; padding: 28px 0; gap: 16px; flex-wrap: wrap; }
       .brand { display: flex; align-items: center; gap: 14px; text-decoration: none; }
-      .logo { width: 48px; height: 48px; border-radius: var(--radius-md); background: var(--blue); color: #fff; display: flex; align-items: center; justify-content: center; box-shadow: 0 6px 0 var(--blue-deep); font-size: 18px; font-weight: 700; }
       nav { display: flex; gap: 10px; }
       nav a { height: 48px; padding: 0 22px; border-radius: var(--radius-md); display: flex; align-items: center; font-weight: 700; color: var(--muted); text-decoration: none; }
       nav a[aria-current="page"] { background: var(--paper); color: var(--blue); font-weight: 800; box-shadow: var(--shadow-card-sm); }
@@ -43,7 +46,7 @@ const nav: { key: "home" | "blog" | "projects"; href: string; label: string; dis
     <div class={wide ? "" : "wrap"}>
       <header class={wide ? "wrap" : ""}>
         <a class="brand" href="/">
-          <span class="logo mono">&lt;/&gt;</span>
+          <Logo size={48} />
           <span class="display" style="font-size:26px;font-weight:800;color:var(--ink)">gartha.me</span>
         </a>
         <nav>

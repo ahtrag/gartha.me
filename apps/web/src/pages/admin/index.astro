@@ -1,6 +1,6 @@
 ---
 import "@gartha/ui/tokens.css";
-import { Avatar } from "@gartha/ui";
+import { Avatar, Logo } from "@gartha/ui";
 import { FONTS_HREF } from "../../lib/fonts";
 
 const nav = [{ label: "Daily report", active: true }, { label: "Posts" }, { label: "Inbox rules" }, { label: "Settings" }];
@@ -19,6 +19,9 @@ const tiles = [
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="robots" content="noindex" />
     <title>Admin · gartha.me</title>
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <link rel="icon" href="/favicon-32.png" type="image/png" sizes="32x32" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link rel="stylesheet" href={FONTS_HREF} />
@@ -27,7 +30,7 @@ const tiles = [
     <div class="shell">
       <aside>
         <div class="brand">
-          <span class="logo mono">&lt;/&gt;</span>
+          <Logo size={44} />
           <div>
             <b class="display">gartha.me</b>
             <span class="mono">admin</span>
@@ -142,18 +145,6 @@ const tiles = [
   .brand span {
     font-size: 12px;
     color: var(--muted);
-  }
-  .logo {
-    width: 44px;
-    height: 44px;
-    border-radius: 14px;
-    background: var(--blue);
-    color: #fff;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    box-shadow: 0 5px 0 var(--blue-deep);
-    font-weight: 700;
   }
   nav {
     display: flex;

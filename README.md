@@ -23,7 +23,8 @@ a real Access login.
                           # web + ui (vitest 5); api tests need apps/web/dist, so build web first
     bun run build            # turbo run build: astro build (web) before the worker (api)
     bun run typecheck
-    bun run deploy:cf     # wrangler deploy, or push to main (Workers Builds)
+    bun run deploy:cf     # build + remote migrations + wrangler deploy
+    bun run deploy:remote # what Workers Builds runs after `bun run build`
 
 ## Layout
 

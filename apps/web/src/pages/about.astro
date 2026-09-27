@@ -1,0 +1,160 @@
+---
+import { getCollection } from "astro:content";
+import Site from "../layouts/Site.astro";
+import PostCard from "../components/PostCard.astro";
+import { Character } from "@gartha/ui";
+import { profile, socials } from "../data/profile";
+import { sortNewest } from "../lib/posts";
+
+const recent = sortNewest(await getCollection("blog")).slice(0, 2);
+---
+
+<Site title="About" description={profile.tagline} active="about">
+  <section class="hd">
+    <div class="htext">
+      <span class="mono" style="font-size:14px;font-weight:700;color:#b9c4f5">// character bio</span>
+      <h1 class="display">About {profile.name}</h1>
+      <p class="title">{profile.title}</p>
+    </div>
+    <div class="hchar" aria-hidden="true"><Character variant="coder" size={200} /></div>
+  </section>
+
+  <div class="cols">
+    <div class="body">
+      {profile.bio.map((p) => <p>{p}</p>)}
+    </div>
+    <aside class="links">
+      <h2 class="display">Find me</h2>
+      <ul>
+        {socials.map((s) => (
+          <li><a class="link-plain" href={s.href} rel={s.href.startsWith("http") ? "me noopener" : undefined}>{s.label}</a></li>
+        ))}
+      </ul>
+    </aside>
+  </div>
+
+  {recent.length > 0 && (
+    <section class="recent">
+      <span class="mono" style="font-size:14px;font-weight:700;color:var(--muted)">// recent saves</span>
+      <div class="grid">{recent.map((p) => <PostCard post={p} />)}</div>
+    </section>
+  )}
+</Site>
+
+<style>
+  .hd {
+    display: flex;
+    justify-content: space-between;
+    gap: 24px;
+    margin-top: 24px;
+    padding: 40px 44px;
+    border-radius: var(--radius-xl);
+    background: var(--blue);
+    box-shadow: 0 8px 0 var(--blue-deep);
+    color: var(--paper);
+    overflow: hidden;
+  }
+  .htext {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+  h1 {
+    margin: 0;
+    font-size: 56px;
+    line-height: 1;
+    font-weight: 800;
+  }
+  .title {
+    margin: 0;
+    font-size: 20px;
+    font-weight: 800;
+    color: var(--bg-bottom);
+  }
+  .hchar {
+    align-self: flex-end;
+    margin-bottom: -84px;
+    flex-shrink: 0;
+  }
+  .cols {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 280px;
+    gap: 28px;
+    margin-top: 36px;
+    align-items: start;
+  }
+  .body {
+    padding: 36px 44px;
+    border-radius: var(--radius-xl);
+    background: var(--paper);
+    box-shadow: var(--shadow-card);
+    font-size: 19px;
+    line-height: 1.7;
+    font-weight: 500;
+    color: var(--ink-2);
+  }
+  .body p {
+    margin: 0 0 16px;
+    text-wrap: pretty;
+  }
+  .body p:last-child {
+    margin-bottom: 0;
+  }
+  .links {
+    padding: 28px;
+    border-radius: var(--radius-xl);
+    background: var(--paper);
+    box-shadow: var(--shadow-card);
+  }
+  .links h2 {
+    margin: 0 0 16px;
+    font-size: 22px;
+    font-weight: 800;
+  }
+  .links ul {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+  .links a {
+    display: flex;
+    align-items: center;
+    height: 48px;
+    padding: 0 18px;
+    border-radius: var(--radius-md);
+    background: var(--blue-tint);
+    font-weight: 800;
+  }
+  .recent {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    margin-top: 48px;
+  }
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 28px;
+  }
+  @media (max-width: 860px) {
+    .cols,
+    .grid {
+      grid-template-columns: 1fr;
+    }
+    .hchar {
+      display: none;
+    }
+  }
+  @media (max-width: 720px) {
+    .hd,
+    .body {
+      padding: 28px 24px;
+    }
+    h1 {
+      font-size: 40px;
+    }
+  }
+</style>

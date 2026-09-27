@@ -2,18 +2,19 @@
 import "@gartha/ui/tokens.css";
 import { Logo } from "@gartha/ui";
 import { FONTS_HREF } from "../lib/fonts";
+import { socials } from "../data/profile";
 interface Props {
   title: string;
   description?: string;
-  active?: "home" | "blog" | "projects";
+  active?: "home" | "blog" | "about";
   wide?: boolean;
 }
 const { title, description, active = "home", wide = false } = Astro.props;
 const canonicalUrl = new URL(Astro.url.pathname, Astro.site);
-const nav: { key: "home" | "blog" | "projects"; href: string; label: string; disabled: boolean }[] = [
-  { key: "home", href: "/", label: "Home", disabled: false },
-  { key: "blog", href: "/blog", label: "Blog", disabled: false },
-  { key: "projects", href: "#", label: "Projects", disabled: true },
+const nav: { key: NonNullable<Props["active"]>; href: string; label: string }[] = [
+  { key: "home", href: "/", label: "Home" },
+  { key: "blog", href: "/blog", label: "Blog" },
+  { key: "about", href: "/about", label: "About" },
 ];
 ---
 <!doctype html>
@@ -37,8 +38,10 @@ const nav: { key: "home" | "blog" | "projects"; href: string; label: string; dis
       nav { display: flex; gap: 10px; }
       nav a { height: 48px; padding: 0 22px; border-radius: var(--radius-md); display: flex; align-items: center; font-weight: 700; color: var(--muted); text-decoration: none; }
       nav a[aria-current="page"] { background: var(--paper); color: var(--blue); font-weight: 800; box-shadow: var(--shadow-card-sm); }
-      nav a[aria-disabled="true"] { opacity: .5; pointer-events: none; }
       main { padding-bottom: 64px; }
+      footer { display: flex; align-items: center; justify-content: space-between; gap: 16px; flex-wrap: wrap; padding: 28px 0 40px; border-top: 2px solid var(--line); font-size: 14px; font-weight: 700; color: var(--muted); }
+      footer ul { display: flex; gap: 8px; flex-wrap: wrap; margin: 0; padding: 0; list-style: none; }
+      footer ul a { display: flex; align-items: center; height: 40px; padding: 0 16px; border-radius: var(--radius-md); background: var(--paper); box-shadow: var(--shadow-card-sm); font-weight: 800; text-decoration: none; }
     </style>
     <slot name="head" />
   </head>
@@ -51,12 +54,20 @@ const nav: { key: "home" | "blog" | "projects"; href: string; label: string; dis
         </a>
         <nav>
           {nav.map((n) => (
-            <a href={n.href} aria-current={n.key === active ? "page" : undefined} aria-disabled={n.disabled ? "true" : undefined} tabindex={n.disabled ? -1 : undefined}>{n.label}</a>
+            <a href={n.href} aria-current={n.key === active ? "page" : undefined}>{n.label}</a>
           ))}
         </nav>
         <slot name="header-right" />
       </header>
       <main><slot /></main>
+      <footer class={wide ? "wrap" : ""}>
+        <span class="mono">© {new Date().getFullYear()} Gartha · gartha.me</span>
+        <ul aria-label="Find me elsewhere">
+          {socials.map((s) => (
+            <li><a href={s.href} rel={s.href.startsWith("http") ? "me noopener" : undefined}>{s.label}</a></li>
+          ))}
+        </ul>
+      </footer>
     </div>
   </body>
 </html>

@@ -3,17 +3,25 @@ import { getCollection } from "astro:content";
 import Site from "../layouts/Site.astro";
 import { Badge, Button, Card, Character, StatRow } from "@gartha/ui";
 import { profile } from "../data/profile";
-import { formatDate, sortNewest } from "../lib/posts";
+import { formatDate, readTime, sortNewest, wordCount } from "../lib/posts";
 
 const posts = sortNewest(await getCollection("blog"));
 const latest = posts[0];
 const stars = Array.from({ length: 5 }, (_, i) => i < profile.stars);
+const words = posts.reduce((n, p) => n + wordCount(p.body ?? ""), 0);
+const readMins = posts.reduce((n, p) => n + readTime(p.body ?? ""), 0);
+const compact = (n: number) => (n >= 1000 ? `${(n / 1000).toFixed(1)}k` : String(n));
+const stats = [
+  { label: "POSTS PUBLISHED", value: String(posts.length), color: "var(--coral)" },
+  { label: "WORDS WRITTEN", value: compact(words), color: "var(--blue)" },
+  { label: "LAST SAVE", value: latest ? formatDate(latest.data.date) : "—", color: "var(--green)" },
+];
 ---
 <Site title="Home" description={profile.tagline} active="home">
   <Fragment slot="header-right">
     <div class="pills">
       <span class="pill mono" style="color:var(--gold-deep)"><i style="background:var(--gold)"></i>{posts.length} posts</span>
-      <span class="pill mono" style="color:var(--green-deep)"><i style="background:var(--green)"></i>{profile.years} yrs</span>
+      <span class="pill mono" style="color:var(--green-deep)"><i style="background:var(--green)"></i>{compact(words)} words</span>
     </div>
   </Fragment>
 
@@ -35,7 +43,7 @@ const stars = Array.from({ length: 5 }, (_, i) => i < profile.stars);
       <hr />
       <div class="ctas">
         <Button href="/blog">Read the blog</Button>
-        <Button href="#" kind="secondary" disabled>About me</Button>
+        <Button href="/about" kind="secondary">About me</Button>
       </div>
     </div>
 
@@ -43,8 +51,8 @@ const stars = Array.from({ length: 5 }, (_, i) => i < profile.stars);
       <Character variant="coder" size={304} />
       <div class="plinth"></div>
       <div class="commits mono">
-        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 17V7l6 4 2-6 2 6 6-4v10z"></path></svg>
-        {profile.commits} commits
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 5a2 2 0 0 1 2-2h14v16H6a2 2 0 0 0-2 2z"></path><path d="M4 21a2 2 0 0 1 2-2h14"></path></svg>
+        {readMins} min of reading
       </div>
     </div>
 
@@ -58,7 +66,7 @@ const stars = Array.from({ length: 5 }, (_, i) => i < profile.stars);
       </Card>
       <Card title="STATS" as="section">
         <div class="rows">
-          {profile.stats.map((s) => (
+          {stats.map((s) => (
             <StatRow label={s.label} value={s.value} color={s.color}><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="var(--paper)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M13 3L4 14h7l-1 7 9-11h-7z"></path></svg></StatRow>
           ))}
         </div>

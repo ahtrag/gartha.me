@@ -7,9 +7,12 @@ export function sortNewest<T extends Dated>(posts: T[]): T[] {
 }
 
 /** Counts raw markdown tokens (whitespace-separated), not rendered/prose words. */
+export function wordCount(body: string): number {
+  return body.trim().split(/\s+/).filter(Boolean).length;
+}
+
 export function readTime(body: string): number {
-  const words = body.trim().split(/\s+/).filter(Boolean).length;
-  return Math.max(1, Math.ceil(words / 200));
+  return Math.max(1, Math.ceil(wordCount(body) / 200));
 }
 
 /** In a newest-first list, prev is the older neighbour and next is the newer one. */

@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { formatDate, neighbours, readTime, sortNewest } from "../src/lib/posts";
+import { formatDate, neighbours, readTime, sortNewest, wordCount } from "../src/lib/posts";
 
 const p = (id: string, date: string, draft = false) => ({
   id,
@@ -51,5 +51,10 @@ describe("posts helpers", () => {
 
   it("formatDate treats the date as UTC", () => {
     expect(formatDate(new Date("2026-09-01T00:00:00Z"))).toBe("2026-09-01");
+  });
+
+  it("wordCount counts whitespace-separated tokens and is 0 for blank input", () => {
+    expect(wordCount("one  two\nthree")).toBe(3);
+    expect(wordCount("   ")).toBe(0);
   });
 });

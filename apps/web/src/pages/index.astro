@@ -10,6 +10,10 @@ const latest = posts[0];
 const stars = Array.from({ length: 5 }, (_, i) => i < profile.stars);
 const words = posts.reduce((n, p) => n + wordCount(p.body ?? ""), 0);
 const readMins = posts.reduce((n, p) => n + readTime(p.body ?? ""), 0);
+const characters = [
+  { variant: "coder", name: "PROGRAMMER" },
+  { variant: "gamer", name: "GAMER" },
+] as const;
 const compact = (n: number) => (n >= 1000 ? `${(n / 1000).toFixed(1)}k` : String(n));
 const stats = [
   { label: "POSTS PUBLISHED", value: String(posts.length), color: "var(--coral)" },
@@ -47,9 +51,21 @@ const stats = [
       </div>
     </div>
 
-    <div class="stage">
-      <Character variant="coder" size={304} />
-      <div class="plinth"></div>
+    <div class="stage" data-character-select role="group" aria-roledescription="character select" aria-label="Choose a character">
+      <div class="select">
+        <button class="chev" type="button" data-step="-1" aria-label="Previous character">
+          <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 5l-7 7 7 7"></path></svg>
+        </button>
+        <div class="slides">
+          {characters.map((c, i) => (
+            <div class="slide" data-slide data-name={c.name} hidden={i !== 0}><Character variant={c.variant} size={304} /></div>
+          ))}
+        </div>
+        <button class="chev" type="button" data-step="1" aria-label="Next character">
+          <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 5l7 7-7 7"></path></svg>
+        </button>
+      </div>
+      <div class="plinth"><span class="display" data-character-label aria-live="polite">{characters[0].name}</span></div>
       <div class="commits mono">
         <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 5a2 2 0 0 1 2-2h14v16H6a2 2 0 0 0-2 2z"></path><path d="M4 21a2 2 0 0 1 2-2h14"></path></svg>
         {readMins} min of reading
@@ -82,6 +98,13 @@ const stats = [
   )}
 </Site>
 
+<script>
+  import { initCharacterSelect } from "../scripts/character-select";
+
+  const root = document.querySelector<HTMLElement>("[data-character-select]");
+  if (root) initCharacterSelect(root);
+</script>
+
 <style>
   .pills { display: flex; gap: 12px; }
   .pill { height: 48px; padding: 0 18px 0 8px; border-radius: var(--radius-md); background: var(--paper); display: flex; align-items: center; gap: 10px; box-shadow: var(--shadow-card-sm); font-size: 15px; font-weight: 700; }
@@ -99,7 +122,17 @@ const stats = [
   hr { border: 0; height: 2px; background: #fff; margin: 0; }
   .ctas { display: flex; gap: 14px; flex-wrap: wrap; }
   .stage { display: flex; flex-direction: column; align-items: center; gap: 16px; padding-top: 40px; }
-  .plinth { width: 340px; max-width: 100%; height: 44px; border-radius: 22px; background: var(--paper); box-shadow: var(--shadow-card); }
+  .select { display: grid; grid-template-columns: 48px minmax(0, 304px) 48px; align-items: center; gap: 8px; }
+  .slide :global(svg) { display: block; width: 100%; height: auto; }
+  .slide:not([hidden]) { animation: pop 0.25s ease-out; }
+  @keyframes pop { from { opacity: 0; transform: translateY(8px) scale(0.96); } to { opacity: 1; transform: none; } }
+  @media (prefers-reduced-motion: reduce) { .slide:not([hidden]) { animation: none; } }
+  .chev { width: 48px; height: 48px; border: 0; border-radius: var(--radius-md); background: var(--paper); color: var(--blue); box-shadow: var(--shadow-card-sm); display: flex; align-items: center; justify-content: center; cursor: pointer; transition: transform 0.1s ease, box-shadow 0.1s ease; }
+  .chev:hover { transform: translateY(2px); box-shadow: 0 2px 0 var(--line); }
+  .chev:active { transform: translateY(4px); box-shadow: none; }
+  .chev:focus-visible { outline: 3px solid var(--blue-deep); outline-offset: 3px; }
+  .plinth { width: 340px; max-width: 100%; height: 44px; border-radius: 22px; background: var(--paper); box-shadow: var(--shadow-card); display: flex; align-items: center; justify-content: center; }
+  .plinth span { font-size: 18px; font-weight: 800; letter-spacing: 0.12em; color: var(--ink-2); }
   .commits { display: flex; align-items: center; gap: 10px; padding: 10px 26px; border-radius: 18px; background: var(--paper); box-shadow: 0 5px 0 var(--line); font-size: 22px; font-weight: 700; }
   .side { display: flex; flex-direction: column; gap: 22px; }
   .rows { display: flex; flex-direction: column; gap: 14px; }

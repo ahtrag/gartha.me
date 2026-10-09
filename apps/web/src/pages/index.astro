@@ -154,18 +154,26 @@ const facts = [
     color: var(--chalk-3);
     transition: transform 0.2s ease;
   }
+  /* A chalk wave under the latest note, which ripples on hover. */
   .latest b {
+    padding-bottom: 8px;
     font-weight: 400;
     font-size: 21px;
-    text-decoration: underline wavy var(--chalk-faint);
-    text-underline-offset: 6px;
+    background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='6'%3E%3Cpath d='M0 3 Q4 0 8 3 T16 3' fill='none' stroke='rgba(243,241,231,0.3)' stroke-width='1.4'/%3E%3C/svg%3E") 0 100% / 16px 6px repeat-x;
+    transition: color 0.2s ease;
   }
   .latest:hover .arrow {
-    transform: translateX(4px);
+    transform: translateX(6px);
   }
   .latest:hover b {
     color: var(--yellow);
-    text-decoration-color: var(--yellow);
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='6'%3E%3Cpath d='M0 3 Q4 0 8 3 T16 3' fill='none' stroke='%23f5e07e' stroke-width='1.4'/%3E%3C/svg%3E");
+    animation: wave 0.6s linear infinite;
+  }
+  @keyframes wave {
+    to {
+      background-position-x: 16px;
+    }
   }
   .more {
     align-self: center;

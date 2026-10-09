@@ -3,52 +3,110 @@ import { formatDate, readTime } from "../lib/posts";
 import type { CollectionEntry } from "astro:content";
 interface Props {
   post: CollectionEntry<"blog">;
+  /** Position in the list, used to stagger the rows as they settle in. */
+  index?: number;
 }
-const { post } = Astro.props;
+const { post, index = 0 } = Astro.props;
 const mins = readTime(post.body ?? "");
 ---
 
-<a class="row link-plain" href={`/blog/${post.id}`} data-category={post.data.category}>
+<a class="row link-plain" href={`/blog/${post.id}`} data-category={post.data.category} style={`--i:${index}`}>
   <time class="mono" datetime={formatDate(post.data.date)}>{formatDate(post.data.date)}</time>
   <div class="text">
-    <h2 class="display">{post.data.title}</h2>
+    <h2 class="display">
+      {post.data.title}
+      <svg class="underline" viewBox="0 0 300 12" preserveAspectRatio="none" aria-hidden="true">
+        <path pathLength="1" d="M2 8 C 50 3 90 11 150 6 S 250 3 298 7" />
+      </svg>
+    </h2>
     <p>{post.data.description}</p>
     <span class="meta mono">{post.data.category} · {mins} min</span>
   </div>
+  <span class="go" aria-hidden="true">
+    <svg width="34" height="22" viewBox="0 0 34 22"><path d="M2 10 C 12 12 22 11 31 11 M24 3 L32 11 L24 19" /></svg>
+  </span>
 </a>
 
 <style>
   .row {
+    position: relative;
     display: grid;
-    grid-template-columns: 130px minmax(0, 1fr);
+    grid-template-columns: 130px minmax(0, 1fr) 40px;
     gap: 24px;
     padding: 26px 0;
     border-bottom: 1px dashed var(--chalk-faint);
     color: var(--chalk);
+    animation: row-in 0.55s ease-out calc(0.15s + var(--i) * 0.08s) both;
+    transition: transform 0.25s ease;
   }
   .row:hover {
     color: var(--chalk);
   }
-  .row:hover h2 {
-    color: var(--yellow);
+  .row:active {
+    transform: scale(0.99);
   }
   time {
     padding-top: 10px;
     font-size: 15px;
     color: var(--chalk-3);
+    transition: color 0.2s ease;
+  }
+  .row:hover time {
+    color: var(--chalk-2);
   }
   .text {
     display: flex;
     flex-direction: column;
     gap: 6px;
+    transition: transform 0.3s cubic-bezier(0.3, 1.4, 0.5, 1);
+  }
+  .row:hover .text {
+    transform: translateX(6px);
   }
   h2 {
+    position: relative;
+    width: fit-content;
     margin: 0;
     font-size: 30px;
     line-height: 1.15;
     text-wrap: pretty;
     transition: color 0.2s ease;
   }
+  .row:hover h2 {
+    color: var(--yellow);
+  }
+
+  /* A chalk line drawn under the title on hover, erased on the way out. */
+  .underline {
+    position: absolute;
+    left: 0;
+    bottom: -8px;
+    width: 100%;
+    height: 10px;
+    overflow: visible;
+    fill: none;
+    stroke: var(--yellow);
+    stroke-width: 2.6;
+    stroke-linecap: round;
+    pointer-events: none;
+  }
+  .underline path {
+    stroke-dasharray: 1;
+    stroke-dashoffset: 1;
+    opacity: 0;
+    transition:
+      stroke-dashoffset 0.45s cubic-bezier(0.6, 0, 0.3, 1),
+      opacity 0s linear 0.45s;
+  }
+  .row:hover .underline path,
+  .row:focus-visible .underline path {
+    stroke-dashoffset: 0;
+    opacity: 1;
+    transition:
+      stroke-dashoffset 0.45s cubic-bezier(0.6, 0, 0.3, 1),
+      opacity 0s;
+  }
+
   p {
     margin: 0;
     font-size: 20px;
@@ -59,6 +117,37 @@ const mins = readTime(post.body ?? "");
     font-size: 14px;
     color: var(--chalk-3);
   }
+
+  /* A chalk arrow slides in from the left. */
+  .go {
+    align-self: center;
+    color: var(--yellow);
+    opacity: 0;
+    transform: translateX(-14px);
+    transition:
+      opacity 0.25s ease,
+      transform 0.35s cubic-bezier(0.3, 1.5, 0.5, 1);
+  }
+  .go svg {
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 2.4;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+  }
+  .row:hover .go,
+  .row:focus-visible .go {
+    opacity: 1;
+    transform: none;
+  }
+
+  @keyframes row-in {
+    from {
+      opacity: 0;
+      transform: translateY(14px);
+    }
+  }
+
   @media (max-width: 640px) {
     .row {
       grid-template-columns: 1fr;
@@ -66,6 +155,9 @@ const mins = readTime(post.body ?? "");
     }
     time {
       padding-top: 0;
+    }
+    .go {
+      display: none;
     }
   }
 </style>

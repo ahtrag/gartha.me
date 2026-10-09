@@ -33,7 +33,7 @@ const recent = sortNewest(await getCollection("blog")).slice(0, 2);
   {recent.length > 0 && (
     <section class="recent">
       <h2 class="display recent-h">recent notes</h2>
-      <div class="list">{recent.map((p) => <PostCard post={p} />)}</div>
+      <div class="list">{recent.map((p, i) => <PostCard post={p} index={i} />)}</div>
     </section>
   )}
 </Site>

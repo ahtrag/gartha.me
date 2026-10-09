@@ -26,7 +26,7 @@ const cats = ["all", "code", "games", "builds"] as const;
   </div>
 
   <div class="list">
-    {all.map((p) => <PostCard post={p} />)}
+    {all.map((p, i) => <PostCard post={p} index={i} />)}
   </div>
   <p class="empty" hidden>Nothing written in this corner of the board yet.</p>
 </Site>
@@ -75,7 +75,9 @@ const cats = ["all", "code", "games", "builds"] as const;
     color: var(--chalk-3);
     font-size: 23px;
     cursor: pointer;
-    transition: color 0.15s ease;
+    transition:
+      color 0.15s ease,
+      transform 0.15s ease;
   }
   .filters button:hover {
     color: var(--chalk);
@@ -84,6 +86,7 @@ const cats = ["all", "code", "games", "builds"] as const;
   .filters button[aria-pressed="true"] {
     color: var(--yellow);
   }
+  /* The circle is drawn around the chosen filter, sweeping like a hand. */
   .filters button[aria-pressed="true"]::after {
     content: "";
     position: absolute;
@@ -91,6 +94,25 @@ const cats = ["all", "code", "games", "builds"] as const;
     border: 2px solid var(--yellow);
     border-radius: 50% 45% 52% 48% / 55% 48% 52% 45%;
     transform: rotate(-3deg);
+    -webkit-mask-image: conic-gradient(from 200deg, #000 var(--sweep), transparent 0);
+    mask-image: conic-gradient(from 200deg, #000 var(--sweep), transparent 0);
+    animation: ring-sweep 0.5s cubic-bezier(0.6, 0, 0.3, 1) both;
+  }
+  .filters button:active {
+    transform: scale(0.94);
+  }
+  @property --sweep {
+    syntax: "<angle>";
+    inherits: false;
+    initial-value: 360deg;
+  }
+  @keyframes ring-sweep {
+    from {
+      --sweep: 0deg;
+    }
+    to {
+      --sweep: 360deg;
+    }
   }
   .empty {
     margin: 36px 0 0;

@@ -118,6 +118,35 @@ import { projects } from "../data/projects";
     content: "# ";
     color: var(--chalk-3);
   }
+  .chip {
+    display: inline-block;
+    cursor: default;
+    transition:
+      color 0.2s ease,
+      transform 0.25s cubic-bezier(0.3, 1.6, 0.5, 1);
+  }
+  .chip:hover {
+    color: var(--yellow);
+    transform: translateY(-2px) rotate(-3deg);
+  }
+  /* "Live" gets a softly pulsing chalk dot. */
+  .status::before {
+    content: "";
+    display: inline-block;
+    width: 7px;
+    height: 7px;
+    margin-right: 6px;
+    border-radius: 50%;
+    background: currentColor;
+    vertical-align: 1px;
+    animation: pulse 1.8s ease-in-out infinite;
+  }
+  @keyframes pulse {
+    50% {
+      opacity: 0.25;
+      transform: scale(0.7);
+    }
+  }
   .links {
     display: flex;
     flex-wrap: wrap;

@@ -159,6 +159,27 @@ h1.chalk {
   }
 }
 
+/* Chalk dust let off by a button press (apps/web/src/scripts/dust.ts). */
+.dust-mote {
+  position: fixed;
+  z-index: 200;
+  width: 5px;
+  height: 5px;
+  margin: -2.5px 0 0 -2.5px;
+  border-radius: 50%;
+  background: var(--chalk);
+  filter: blur(0.4px);
+  opacity: 0.85;
+  pointer-events: none;
+  animation: dust-fly 0.7s cubic-bezier(0.2, 0.7, 0.4, 1) forwards;
+}
+@keyframes dust-fly {
+  to {
+    transform: translate(var(--dx), var(--dy)) scale(var(--s));
+    opacity: 0;
+  }
+}
+
 /* A box drawn by hand in chalk. */
 .sketch {
   border: 2px solid var(--chalk-line);

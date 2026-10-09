@@ -29,10 +29,11 @@ const postingLd = {
     <script type="application/ld+json" is:inline set:html={JSON.stringify(postingLd)} />
   </Fragment>
   <Fragment slot="header-right"><a class="back link-plain hand" href="/blog">⟵ back to the blog</a></Fragment>
-  <article>
+  <div class="progress" data-progress aria-hidden="true"><span></span></div>
+  <article data-article>
     <header class="hd">
       <div><CategoryChip category={post.data.category} /></div>
-      <h1 class="display">{post.data.title}</h1>
+      <h1 class="display chalk">{post.data.title}</h1>
       <div class="by">
         <Avatar /><b>Gartha</b>
         <time class="mono" datetime={formatDate(post.data.date)}>{formatDate(post.data.date)}</time>
@@ -44,7 +45,7 @@ const postingLd = {
       {
         prev ? (
           <a class="link-plain" href={`/blog/${prev.id}`}>
-            <small class="mono">previous</small>
+            <small class="mono"><span class="nudge" aria-hidden="true">⟵</span> previous</small>
             <b class="hand">{prev.data.title}</b>
           </a>
         ) : (
@@ -54,7 +55,7 @@ const postingLd = {
       {
         next ? (
           <a class="r link-plain" href={`/blog/${next.id}`}>
-            <small class="mono">next</small>
+            <small class="mono">next <span class="nudge" aria-hidden="true">⟶</span></small>
             <b class="hand">{next.data.title}</b>
           </a>
         ) : (
@@ -65,7 +66,39 @@ const postingLd = {
   </article>
 </Site>
 
+<script>
+  import { addCopyButtons, initProgress, markWhenSeen } from "../../scripts/reading";
+
+  const article = document.querySelector<HTMLElement>("[data-article]");
+  const bar = document.querySelector<HTMLElement>("[data-progress]");
+  if (article && bar) initProgress(article, bar);
+  const body = document.querySelector<HTMLElement>(".body");
+  if (body) {
+    markWhenSeen(body.querySelectorAll("h2, h3"));
+    addCopyButtons(body);
+  }
+</script>
+
 <style>
+  /* Reading progress: a chalk line drawn across the top as you read. */
+  .progress {
+    position: fixed;
+    inset: 0 0 auto;
+    z-index: 60;
+    height: 3px;
+    pointer-events: none;
+  }
+  .progress span {
+    display: block;
+    height: 100%;
+    background: var(--yellow);
+    box-shadow: 0 0 6px rgba(245, 224, 126, 0.5);
+    transform: scaleX(var(--p, 0));
+    transform-origin: left;
+    -webkit-mask-image: var(--grain);
+    mask-image: var(--grain);
+  }
+
   .back {
     font-size: 21px;
     color: var(--chalk-2);
@@ -169,6 +202,103 @@ const postingLd = {
     border-top: 2px dashed var(--chalk-faint);
     margin: 32px 0;
   }
+  /* Section headings get underlined in chalk as they come into view. */
+  .body :global(h2),
+  .body :global(h3) {
+    position: relative;
+    width: fit-content;
+  }
+  .body :global(h2)::after,
+  .body :global(h3)::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: -6px;
+    height: 3px;
+    border-radius: 2px;
+    background: var(--yellow);
+    opacity: 0.6;
+    transform: scaleX(0) rotate(-0.6deg);
+    transform-origin: left;
+    transition: transform 0.7s cubic-bezier(0.6, 0, 0.3, 1) 0.1s;
+    -webkit-mask-image: var(--grain);
+    mask-image: var(--grain);
+  }
+  .body :global(h2.seen)::after,
+  .body :global(h3.seen)::after {
+    transform: scaleX(1) rotate(-0.6deg);
+  }
+
+  /* Links: the chalk underline thickens and brightens on hover. */
+  .body :global(a) {
+    text-decoration: none;
+    background: linear-gradient(currentColor, currentColor) 0 100% / 100% 1px no-repeat;
+    padding-bottom: 1px;
+    transition: background-size 0.25s ease, color 0.2s ease;
+  }
+  .body :global(a:hover) {
+    background-size: 100% 2.5px;
+    color: var(--chalk);
+  }
+
+  /* Copy button on code blocks. */
+  .body :global(pre) {
+    position: relative;
+  }
+  .body :global(.copy) {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    padding: 4px 10px;
+    border: 1.5px solid var(--chalk-faint);
+    border-radius: var(--sketch-radius);
+    background: rgba(36, 41, 39, 0.9);
+    color: var(--chalk-3);
+    font-size: 13px;
+    cursor: pointer;
+    opacity: 0;
+    transition:
+      opacity 0.2s ease,
+      color 0.2s ease,
+      border-color 0.2s ease,
+      transform 0.2s ease;
+  }
+  .body :global(pre:hover .copy),
+  .body :global(.copy:focus-visible) {
+    opacity: 1;
+  }
+  .body :global(.copy:hover) {
+    color: var(--chalk);
+    border-color: var(--chalk-line);
+  }
+  .body :global(.copy.done) {
+    opacity: 1;
+    color: var(--mint);
+    border-color: var(--mint);
+    animation: copied 0.4s cubic-bezier(0.3, 1.6, 0.5, 1);
+  }
+  @keyframes copied {
+    40% {
+      transform: scale(1.12) rotate(-3deg);
+    }
+  }
+  @media (hover: none) {
+    .body :global(.copy) {
+      opacity: 1;
+    }
+  }
+
+  .nudge {
+    display: inline-block;
+    transition: transform 0.3s cubic-bezier(0.3, 1.6, 0.5, 1);
+  }
+  .pn a:hover .nudge {
+    transform: translateX(4px);
+  }
+  .pn a:not(.r):hover .nudge {
+    transform: translateX(-4px);
+  }
   .pn {
     border-top: 1px dashed var(--chalk-faint);
     display: grid;
@@ -204,7 +334,104 @@ const postingLd = {
     .body {
       font-size: 20px;
     }
-    .pn {
+    /* Section headings get underlined in chalk as they come into view. */
+  .body :global(h2),
+  .body :global(h3) {
+    position: relative;
+    width: fit-content;
+  }
+  .body :global(h2)::after,
+  .body :global(h3)::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: -6px;
+    height: 3px;
+    border-radius: 2px;
+    background: var(--yellow);
+    opacity: 0.6;
+    transform: scaleX(0) rotate(-0.6deg);
+    transform-origin: left;
+    transition: transform 0.7s cubic-bezier(0.6, 0, 0.3, 1) 0.1s;
+    -webkit-mask-image: var(--grain);
+    mask-image: var(--grain);
+  }
+  .body :global(h2.seen)::after,
+  .body :global(h3.seen)::after {
+    transform: scaleX(1) rotate(-0.6deg);
+  }
+
+  /* Links: the chalk underline thickens and brightens on hover. */
+  .body :global(a) {
+    text-decoration: none;
+    background: linear-gradient(currentColor, currentColor) 0 100% / 100% 1px no-repeat;
+    padding-bottom: 1px;
+    transition: background-size 0.25s ease, color 0.2s ease;
+  }
+  .body :global(a:hover) {
+    background-size: 100% 2.5px;
+    color: var(--chalk);
+  }
+
+  /* Copy button on code blocks. */
+  .body :global(pre) {
+    position: relative;
+  }
+  .body :global(.copy) {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    padding: 4px 10px;
+    border: 1.5px solid var(--chalk-faint);
+    border-radius: var(--sketch-radius);
+    background: rgba(36, 41, 39, 0.9);
+    color: var(--chalk-3);
+    font-size: 13px;
+    cursor: pointer;
+    opacity: 0;
+    transition:
+      opacity 0.2s ease,
+      color 0.2s ease,
+      border-color 0.2s ease,
+      transform 0.2s ease;
+  }
+  .body :global(pre:hover .copy),
+  .body :global(.copy:focus-visible) {
+    opacity: 1;
+  }
+  .body :global(.copy:hover) {
+    color: var(--chalk);
+    border-color: var(--chalk-line);
+  }
+  .body :global(.copy.done) {
+    opacity: 1;
+    color: var(--mint);
+    border-color: var(--mint);
+    animation: copied 0.4s cubic-bezier(0.3, 1.6, 0.5, 1);
+  }
+  @keyframes copied {
+    40% {
+      transform: scale(1.12) rotate(-3deg);
+    }
+  }
+  @media (hover: none) {
+    .body :global(.copy) {
+      opacity: 1;
+    }
+  }
+
+  .nudge {
+    display: inline-block;
+    transition: transform 0.3s cubic-bezier(0.3, 1.6, 0.5, 1);
+  }
+  .pn a:hover .nudge {
+    transform: translateX(4px);
+  }
+  .pn a:not(.r):hover .nudge {
+    transform: translateX(-4px);
+  }
+  .pn {
       grid-template-columns: 1fr;
     }
     .pn a.r {

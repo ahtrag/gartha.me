@@ -1,145 +1,203 @@
 ---
 import { getCollection } from "astro:content";
 import Site from "../layouts/Site.astro";
-import { Badge, Button, Card, Character, StatRow } from "@gartha/ui";
+import ChalkStage from "../components/ChalkStage.astro";
+import { Button } from "@gartha/ui";
 import { profile } from "../data/profile";
 import { formatDate, readTime, sortNewest, wordCount } from "../lib/posts";
 
 const posts = sortNewest(await getCollection("blog"));
 const latest = posts[0];
-const stars = Array.from({ length: 5 }, (_, i) => i < profile.stars);
 const words = posts.reduce((n, p) => n + wordCount(p.body ?? ""), 0);
 const readMins = posts.reduce((n, p) => n + readTime(p.body ?? ""), 0);
-const characters = [
-  { variant: "coder", name: "PROGRAMMER" },
-  { variant: "gamer", name: "GAMER" },
-] as const;
 const compact = (n: number) => (n >= 1000 ? `${(n / 1000).toFixed(1)}k` : String(n));
-const stats = [
-  { label: "POSTS PUBLISHED", value: String(posts.length), color: "var(--coral)" },
-  { label: "WORDS WRITTEN", value: compact(words), color: "var(--blue)" },
-  { label: "LAST SAVE", value: latest ? formatDate(latest.data.date) : "—", color: "var(--green)" },
+const facts = [
+  `${posts.length} posts`,
+  `${compact(words)} words`,
+  `${readMins} min of reading`,
+  ...(latest ? [`last written ${formatDate(latest.data.date)}`] : []),
 ];
 ---
-<Site title="Home" description={profile.tagline} active="home">
-  <Fragment slot="header-right">
-    <div class="pills">
-      <span class="pill mono" style="color:var(--gold-deep)"><i style="background:var(--gold)"></i>{posts.length} posts</span>
-      <span class="pill mono" style="color:var(--green-deep)"><i style="background:var(--green)"></i>{compact(words)} words</span>
-    </div>
-  </Fragment>
-
+<Site title="Gartha · Software Engineer" description={profile.tagline} active="home">
   <section class="hero">
     <div class="profile">
-      <div><Badge>PLAYABLE</Badge></div>
-      <h1 class="display">{profile.name}</h1>
-      <p class="title">{profile.title}</p>
-      <div class="stars" role="img" aria-label={`${profile.stars} of 5 stars`}>
-        {stars.map((on) => (
-          <svg width="30" height="30" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2l2.9 6.3 6.9.8-5.1 4.7 1.4 6.8L12 17.3 5.9 20.6l1.4-6.8L2.2 9.1l6.9-.8z" fill={on ? "var(--gold)" : "var(--track)"}></path></svg>
-        ))}
-      </div>
-      <div class="level">
-        <span class="display" style="font-size:20px;font-weight:800;color:var(--muted)">LV <b style="font-size:36px;color:var(--ink)">{profile.level}</b></span>
-        <div class="bar" role="progressbar" aria-label="XP" aria-valuemin="0" aria-valuemax="100" aria-valuenow={profile.xpPercent}><div style={`width:${profile.xpPercent}%`}></div><span class="mono" aria-hidden="true">XP</span></div>
-      </div>
+      <h1 class="name display chalk">{profile.name}</h1>
+      <svg class="underline" viewBox="0 0 300 18" aria-hidden="true"><path pathLength="1" d="M4 12 C 60 4 130 16 190 8 S 270 6 296 10" /></svg>
+      <p class="title display">{profile.title}</p>
       <p class="intro">{profile.intro}</p>
-      <hr />
       <div class="ctas">
-        <Button href="/blog">Read the blog</Button>
-        <Button href="/about" kind="secondary">About me</Button>
+        <Button href="/blog">read the blog</Button>
+        <a class="more" href="/about">about me ⟶</a>
       </div>
+      {latest && (
+        <a class="latest link-plain" href={`/blog/${latest.id}`}>
+          <span class="mono tag">latest note</span>
+          <span class="arrow" aria-hidden="true">⟶</span>
+          <b>{latest.data.title}</b>
+        </a>
+      )}
     </div>
 
-    <div class="stage" data-character-select role="group" aria-roledescription="character select" aria-label="Choose a character">
-      <div class="select">
-        <button class="chev" type="button" data-step="-1" aria-label="Previous character">
-          <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 5l-7 7 7 7"></path></svg>
-        </button>
-        <div class="slides">
-          {characters.map((c, i) => (
-            <div class="slide" data-slide data-name={c.name} hidden={i !== 0}><Character variant={c.variant} size={304} /></div>
-          ))}
-        </div>
-        <button class="chev" type="button" data-step="1" aria-label="Next character">
-          <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 5l7 7-7 7"></path></svg>
-        </button>
-      </div>
-      <div class="plinth"><span class="display" data-character-label aria-live="polite">{characters[0].name}</span></div>
-      <div class="commits mono">
-        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 5a2 2 0 0 1 2-2h14v16H6a2 2 0 0 0-2 2z"></path><path d="M4 21a2 2 0 0 1 2-2h14"></path></svg>
-        {readMins} min of reading
-      </div>
-    </div>
-
-    <div class="side">
-      <Card title="MAIN STACK" as="section">
-        <div class="rows">
-          {profile.stack.map((s) => (
-            <StatRow label={s.label} value={s.value} color={s.color}><span class="mono" style="color:var(--paper);font-size:16px;font-weight:700">{s.glyph}</span></StatRow>
-          ))}
-        </div>
-      </Card>
-      <Card title="STATS" as="section">
-        <div class="rows">
-          {stats.map((s) => (
-            <StatRow label={s.label} value={s.value} color={s.color}><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="var(--paper)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M13 3L4 14h7l-1 7 9-11h-7z"></path></svg></StatRow>
-          ))}
-        </div>
-      </Card>
-    </div>
+    <ChalkStage />
   </section>
 
-  {latest && (
-    <a class="latest" href={`/blog/${latest.id}`}>
-      <span class="mono" style="color:var(--muted);font-size:14px;font-weight:700">// latest save</span>
-      <span class="chip"><i></i><b>{latest.data.title}</b><time class="mono" style="color:var(--muted);font-size:13px" datetime={formatDate(latest.data.date)}>{formatDate(latest.data.date)}</time></span>
-    </a>
-  )}
+  <section class="facts mono" aria-label="At a glance">
+    <p>{profile.stack.map((t) => t.value).join(" · ")}</p>
+    <p>{facts.join(" · ")}</p>
+  </section>
 </Site>
 
-<script>
-  import { initCharacterSelect } from "../scripts/character-select";
-
-  const root = document.querySelector<HTMLElement>("[data-character-select]");
-  if (root) initCharacterSelect(root);
-</script>
-
 <style>
-  .pills { display: flex; gap: 12px; }
-  .pill { height: 48px; padding: 0 18px 0 8px; border-radius: var(--radius-md); background: var(--paper); display: flex; align-items: center; gap: 10px; box-shadow: var(--shadow-card-sm); font-size: 15px; font-weight: 700; }
-  .pill i { width: 32px; height: 32px; border-radius: 10px; display: block; }
-  .hero { display: grid; grid-template-columns: minmax(0, 400px) minmax(304px, 1fr) minmax(0, 340px); gap: 40px; align-items: start; margin-top: 40px; }
-  .profile { display: flex; flex-direction: column; gap: 22px; }
-  h1 { margin: 0; font-size: 72px; line-height: 1; font-weight: 800; }
-  .title { margin: 0; font-size: 22px; font-weight: 800; color: var(--blue); }
-  .stars { display: flex; gap: 6px; }
-  .level { display: flex; align-items: center; gap: 14px; }
-  .bar { flex: 1; height: 34px; border-radius: 12px; background: var(--track); position: relative; overflow: hidden; }
-  .bar div { position: absolute; inset: 0 auto 0 0; background: var(--green); border-radius: 12px; }
-  .bar span { position: absolute; left: 50%; top: 7px; font-size: 15px; font-weight: 700; color: var(--paper); }
-  .intro { margin: 0; font-size: 19px; line-height: 1.5; font-weight: 600; color: var(--ink-2); text-wrap: pretty; }
-  hr { border: 0; height: 2px; background: #fff; margin: 0; }
-  .ctas { display: flex; gap: 14px; flex-wrap: wrap; }
-  .stage { display: flex; flex-direction: column; align-items: center; gap: 16px; padding-top: 40px; }
-  .select { display: grid; grid-template-columns: 48px minmax(0, 304px) 48px; align-items: center; gap: 8px; }
-  .slide :global(svg) { display: block; width: 100%; height: auto; }
-  .slide:not([hidden]) { animation: pop 0.25s ease-out; }
-  @keyframes pop { from { opacity: 0; transform: translateY(8px) scale(0.96); } to { opacity: 1; transform: none; } }
-  @media (prefers-reduced-motion: reduce) { .slide:not([hidden]) { animation: none; } }
-  .chev { width: 48px; height: 48px; border: 0; border-radius: var(--radius-md); background: var(--paper); color: var(--blue); box-shadow: var(--shadow-card-sm); display: flex; align-items: center; justify-content: center; cursor: pointer; transition: transform 0.1s ease, box-shadow 0.1s ease; }
-  .chev:hover { transform: translateY(2px); box-shadow: 0 2px 0 var(--line); }
-  .chev:active { transform: translateY(4px); box-shadow: none; }
-  .chev:focus-visible { outline: 3px solid var(--blue-deep); outline-offset: 3px; }
-  .plinth { width: 340px; max-width: 100%; height: 44px; border-radius: 22px; background: var(--paper); box-shadow: var(--shadow-card); display: flex; align-items: center; justify-content: center; }
-  .plinth span { font-size: 18px; font-weight: 800; letter-spacing: 0.12em; color: var(--ink-2); }
-  .commits { display: flex; align-items: center; gap: 10px; padding: 10px 26px; border-radius: 18px; background: var(--paper); box-shadow: 0 5px 0 var(--line); font-size: 22px; font-weight: 700; }
-  .side { display: flex; flex-direction: column; gap: 22px; }
-  .rows { display: flex; flex-direction: column; gap: 14px; }
-  .latest { display: flex; align-items: center; gap: 12px; margin-top: 48px; color: inherit; text-decoration: none; }
-  .chip { display: flex; align-items: center; gap: 10px; padding: 8px 16px; border-radius: 14px; background: var(--paper); box-shadow: var(--shadow-card-sm); font-size: 15px; transition: transform 0.1s ease, box-shadow 0.1s ease; }
-  .chip i { width: 10px; height: 10px; border-radius: 5px; background: var(--green); }
-  .latest:hover .chip { transform: translateY(2px); box-shadow: 0 2px 0 var(--line); }
-  @media (max-width: 1180px) { .hero { grid-template-columns: 1fr 1fr; } .side { grid-column: 1 / -1; flex-direction: row; } .side > * { flex: 1; } }
-  @media (max-width: 720px) { .hero { grid-template-columns: 1fr; } .side { flex-direction: column; } h1 { font-size: 56px; } .pills { display: none; } }
+  .hero {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 600px);
+    gap: 32px;
+    align-items: center;
+  }
+  .profile {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    max-width: 480px;
+  }
+  /* Name: plain chalk lettering, written in left to right with an underline. */
+  .name {
+    margin: 0;
+    font-size: 104px;
+    line-height: 0.95;
+    animation: hero-write 1.1s cubic-bezier(0.5, 0, 0.3, 1) 0.15s both;
+  }
+  .underline {
+    width: 260px;
+    height: 18px;
+    margin-top: -14px;
+    fill: none;
+    stroke: var(--yellow);
+    stroke-width: 3;
+    stroke-linecap: round;
+  }
+  .underline path {
+    stroke-dasharray: 1;
+    stroke-dashoffset: 1;
+    animation: hero-draw 0.7s ease-out 0.8s forwards;
+  }
+  /* The rest of the intro settles in one line after another. */
+  .profile > :nth-child(n + 3) {
+    animation: hero-rise 0.7s ease-out both;
+  }
+  .profile > :nth-child(3) {
+    animation-delay: 0.6s;
+  }
+  .profile > :nth-child(4) {
+    animation-delay: 0.72s;
+  }
+  .profile > :nth-child(5) {
+    animation-delay: 0.84s;
+  }
+  .profile > :nth-child(6) {
+    animation-delay: 0.96s;
+  }
+  .facts {
+    animation: hero-rise 0.7s ease-out 1.2s both;
+  }
+  @keyframes hero-write {
+    from {
+      clip-path: inset(-10% 100% -10% 0);
+    }
+    to {
+      clip-path: inset(-10% -2% -10% 0);
+    }
+  }
+  @keyframes hero-draw {
+    to {
+      stroke-dashoffset: 0;
+    }
+  }
+  @keyframes hero-rise {
+    from {
+      opacity: 0;
+      transform: translateY(10px);
+    }
+  }
+  .title {
+    margin: 0;
+    font-size: 30px;
+    color: var(--sky);
+    text-shadow: var(--chalk-glow);
+  }
+  .intro {
+    margin: 0;
+    font-size: 21px;
+    line-height: 1.45;
+    color: var(--chalk-2);
+    text-wrap: pretty;
+  }
+  .ctas {
+    display: flex;
+    gap: 24px;
+    flex-wrap: wrap;
+    margin-top: 6px;
+  }
+  .latest {
+    display: flex;
+    align-items: baseline;
+    flex-wrap: wrap;
+    gap: 6px 12px;
+    margin-top: 14px;
+    color: var(--chalk);
+  }
+  .latest .tag {
+    font-size: 15px;
+    color: var(--yellow);
+  }
+  .latest .arrow {
+    color: var(--chalk-3);
+    transition: transform 0.2s ease;
+  }
+  .latest b {
+    font-weight: 400;
+    font-size: 21px;
+    text-decoration: underline wavy var(--chalk-faint);
+    text-underline-offset: 6px;
+  }
+  .latest:hover .arrow {
+    transform: translateX(4px);
+  }
+  .latest:hover b {
+    color: var(--yellow);
+    text-decoration-color: var(--yellow);
+  }
+  .more {
+    align-self: center;
+    font-size: 21px;
+    color: var(--chalk-2);
+    text-decoration: none;
+  }
+  .more:hover {
+    color: var(--yellow);
+  }
+  .facts {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    margin-top: 40px;
+    font-size: 15px;
+    color: var(--chalk-3);
+  }
+  .facts p {
+    margin: 0;
+  }
+  @media (max-width: 960px) {
+    .hero {
+      grid-template-columns: 1fr;
+    }
+    .profile {
+      max-width: none;
+    }
+  }
+  @media (max-width: 720px) {
+    .name {
+      font-size: 76px;
+    }
+  }
 </style>

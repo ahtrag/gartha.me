@@ -1,0 +1,165 @@
+---
+import Site from "../layouts/Site.astro";
+import { projects } from "../data/projects";
+
+---
+
+<Site title="Projects" description="Things Gartha has built and shipped." active="projects">
+  <div class="head">
+    <span class="mono label">things i have built</span>
+    <h1 class="display chalk">Projects</h1>
+  </div>
+
+  <div class="grid">
+    {
+      projects.map((p) => (
+        <article class="card">
+          <div class="top">
+            <div class="title-row">
+              <h2 class="display">{p.name}</h2>
+              {p.status && <span class="mono status">{p.status}</span>}
+            </div>
+            <p>{p.description}</p>
+          </div>
+          <ul class="stack" aria-label={`${p.name} stack`}>
+            {p.stack.map((s) => (
+              <li class="mono chip">{s}</li>
+            ))}
+          </ul>
+          <div class="links">
+            {p.links.map((l, i) => (
+              <a class:list={["btn", "link-plain", "hand", i === 0 ? "primary" : "secondary"]} href={l.href} rel="noopener">
+                {l.label}
+              </a>
+            ))}
+          </div>
+        </article>
+      ))
+    }
+  </div>
+  <p class="note mono">More gets written up as it ships.</p>
+</Site>
+
+<style>
+  .label {
+    font-size: 16px;
+    color: var(--chalk-3);
+  }
+  h1 {
+    margin: 0;
+    font-size: 76px;
+    line-height: 1;
+  }
+  .grid {
+    display: grid;
+    max-width: 760px;
+    margin-top: 28px;
+    border-top: 1px dashed var(--chalk-faint);
+  }
+
+  .card {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    gap: 20px;
+    padding: 28px 0;
+    border-bottom: 1px dashed var(--chalk-faint);
+    color: var(--chalk);
+    min-width: 0;
+    box-sizing: border-box;
+  }
+  .top {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+  .title-row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex-wrap: wrap;
+  }
+  h2 {
+    margin: 0;
+    font-size: 36px;
+    line-height: 1.1;
+    font-weight: 400;
+    overflow-wrap: anywhere;
+    text-shadow: var(--chalk-glow);
+  }
+  .status {
+    padding: 2px 10px;
+    border: 1.5px solid var(--mint);
+    border-radius: var(--sketch-radius);
+    color: var(--mint);
+    font-size: 14px;
+    transform: rotate(-3deg);
+  }
+  p {
+    margin: 0;
+    font-size: 21px;
+    line-height: 1.45;
+    color: var(--chalk-2);
+    max-width: 640px;
+  }
+  .stack {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px 16px;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+  .chip {
+    font-size: 15px;
+    color: var(--sky);
+  }
+  .chip::before {
+    content: "# ";
+    color: var(--chalk-3);
+  }
+  .links {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+  }
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    height: 44px;
+    padding: 0 20px;
+    border: 2px solid var(--chalk);
+    border-radius: var(--sketch-radius-pill);
+    font-size: 20px;
+    transition: transform 0.15s ease, background-color 0.15s ease, color 0.15s ease, border-color 0.15s ease;
+  }
+  .btn.primary {
+    background: var(--chalk);
+    color: var(--paper-ink);
+  }
+  .btn.primary:hover {
+    background: var(--yellow);
+    border-color: var(--yellow);
+    color: var(--paper-ink);
+    transform: rotate(-1.5deg);
+  }
+  .btn.secondary {
+    color: var(--chalk);
+    border-color: var(--chalk-line);
+  }
+  .btn.secondary:hover {
+    color: var(--yellow);
+    border-color: var(--yellow);
+    transform: rotate(1.5deg);
+  }
+  .note {
+    margin: 28px 0 0;
+    font-size: 15px;
+    color: var(--chalk-3);
+  }
+  @media (max-width: 640px) {
+    h1 {
+      font-size: 60px;
+    }
+  }
+</style>

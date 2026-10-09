@@ -6,25 +6,65 @@ import { socials } from "../data/profile";
 interface Props {
   title: string;
   description?: string;
-  active?: "home" | "blog" | "about";
+  active?: "home" | "blog" | "projects" | "about";
   wide?: boolean;
+  /** Site-relative path to the link-preview image. */
+  image?: string;
+  type?: "website" | "article";
 }
-const { title, description, active = "home", wide = false } = Astro.props;
+const { title, description, active = "home", wide = false, image = "/og.png", type = "website" } = Astro.props;
 const canonicalUrl = new URL(Astro.url.pathname, Astro.site);
+const fullTitle = `${title} · gartha.me`;
+const imageUrl = new URL(image, Astro.site).href;
+const imageAlt = "Gartha, Software Engineer at Imajinyata. gartha.me";
+const isHome = Astro.url.pathname === "/";
+const personLd = {
+  "@context": "https://schema.org",
+  "@type": "Person",
+  name: "Gartha",
+  url: "https://gartha.me",
+  jobTitle: "Software Engineer",
+  worksFor: { "@type": "Organization", name: "Imajinyata", url: "https://imajinyata.com" },
+  sameAs: ["https://github.com/ahtrag"],
+};
 const nav: { key: NonNullable<Props["active"]>; href: string; label: string }[] = [
-  { key: "home", href: "/", label: "Home" },
-  { key: "blog", href: "/blog", label: "Blog" },
-  { key: "about", href: "/about", label: "About" },
+  { key: "home", href: "/", label: "home" },
+  { key: "blog", href: "/blog", label: "blog" },
+  { key: "projects", href: "/projects", label: "projects" },
+  { key: "about", href: "/about", label: "about" },
 ];
+const navLeft = nav.slice(0, 2);
+const navRight = nav.slice(2);
+// Ragged bottom edge for the paper strip. A fixed seed keeps builds stable.
+let seed = 7;
+const rand = () => ((seed = (seed * 9301 + 49297) % 233280) / 233280);
+const torn: string[] = ["0% 0%", "100% 0%"];
+for (let x = 100; x >= 0; x -= 2.5) torn.push(`${x}% calc(100% - ${(rand() * 9).toFixed(1)}px)`);
+const tornClip = `polygon(${torn.join(", ")})`;
 ---
 <!doctype html>
 <html lang="en">
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>{title} · gartha.me</title>
+    <title>{fullTitle}</title>
     {description && <meta name="description" content={description} />}
     <link rel="canonical" href={canonicalUrl} />
+    <meta property="og:site_name" content="gartha.me" />
+    <meta property="og:title" content={fullTitle} />
+    {description && <meta property="og:description" content={description} />}
+    <meta property="og:url" content={canonicalUrl.href} />
+    <meta property="og:type" content={type} />
+    <meta property="og:image" content={imageUrl} />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content={imageAlt} />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={fullTitle} />
+    {description && <meta name="twitter:description" content={description} />}
+    <meta name="twitter:image" content={imageUrl} />
+    <meta name="twitter:image:alt" content={imageAlt} />
+    {isHome && <script type="application/ld+json" is:inline set:html={JSON.stringify(personLd)} />}
     <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
     <link rel="icon" href="/favicon-32.png" type="image/png" sizes="32x32" />
     <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
@@ -32,36 +72,57 @@ const nav: { key: NonNullable<Props["active"]>; href: string; label: string }[] 
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link rel="stylesheet" href={FONTS_HREF} />
     <style>
-      .wrap { max-width: 1248px; margin: 0 auto; padding: 0 24px; }
-      header { display: flex; align-items: center; justify-content: space-between; padding: 28px 0; gap: 16px; flex-wrap: wrap; }
-      .brand { display: flex; align-items: center; gap: 14px; text-decoration: none; }
-      nav { display: flex; gap: 10px; }
-      nav a { height: 48px; padding: 0 22px; border-radius: var(--radius-md); display: flex; align-items: center; font-weight: 700; color: var(--muted); text-decoration: none; }
-      nav a[aria-current="page"] { background: var(--paper); color: var(--blue); font-weight: 800; box-shadow: var(--shadow-card-sm); }
-      main { padding-bottom: 64px; }
-      footer { display: flex; align-items: center; justify-content: space-between; gap: 16px; flex-wrap: wrap; padding: 28px 0 40px; border-top: 2px solid var(--line); font-size: 14px; font-weight: 700; color: var(--muted); }
-      footer ul { display: flex; gap: 8px; flex-wrap: wrap; margin: 0; padding: 0; list-style: none; }
-      footer ul a { display: flex; align-items: center; height: 40px; padding: 0 16px; border-radius: var(--radius-md); background: var(--paper); box-shadow: var(--shadow-card-sm); font-weight: 800; text-decoration: none; }
+      .wrap { max-width: 1200px; margin: 0 auto; padding: 0 24px; }
+      .strip { position: relative; display: grid; grid-template-columns: 1fr auto 1fr; align-items: center; gap: 28px; max-width: 760px; margin: 0 auto; padding: 14px 40px 22px; background: var(--paper-strip); color: var(--paper-ink); box-shadow: 0 6px 18px rgba(0, 0, 0, 0.35); transform: rotate(-0.4deg); }
+      .strip::before { content: ""; position: absolute; inset: 0; background: var(--grain); opacity: 0.12; mix-blend-mode: multiply; pointer-events: none; }
+      .brand { display: flex; flex-direction: column; align-items: center; gap: 0; color: var(--paper-ink); text-decoration: none; --logo-accent: #17886a; }
+      .brand:hover { color: var(--paper-ink); }
+      .brand span { font-size: 22px; line-height: 1; }
+      nav { display: flex; gap: 22px; }
+      nav.l { justify-content: flex-end; }
+      nav a { position: relative; padding: 4px 2px; font-family: var(--font-type); font-size: 17px; color: var(--paper-ink); text-decoration: none; }
+      nav a::after { content: ""; position: absolute; left: -4px; right: -4px; bottom: -2px; height: 2px; background: currentColor; border-radius: 2px; transform: scaleX(0) rotate(-1.5deg); transform-origin: left; transition: transform 0.2s ease; }
+      nav a:hover { color: var(--paper-ink); }
+      nav a:hover::after, nav a[aria-current="page"]::after { transform: scaleX(1) rotate(-1.5deg); }
+      .extra { display: flex; justify-content: flex-end; padding-top: 18px; }
+      .extra:empty { display: none; }
+      main { padding: 28px 0 72px; }
+      footer { display: flex; align-items: center; justify-content: space-between; gap: 16px; flex-wrap: wrap; padding: 28px 0 40px; border-top: 1px dashed var(--chalk-faint); color: var(--chalk-3); }
+      footer .mono { font-size: 15px; }
+      footer ul { display: flex; gap: 12px; flex-wrap: wrap; margin: 0; padding: 0; list-style: none; }
+      footer ul { gap: 22px; }
+      footer ul a { color: var(--chalk-2); font-size: 19px; text-decoration: none; }
+      footer ul a:hover { color: var(--yellow); }
+      @media (max-width: 640px) {
+        .strip { grid-template-columns: 1fr 1fr; gap: 6px 20px; padding: 12px 18px 20px; margin: 0 -24px; transform: none; }
+        .brand { grid-column: 1 / -1; order: -1; }
+        nav.l { justify-content: flex-end; }
+        nav { gap: 16px; }
+        nav a { font-size: 16px; }
+      }
     </style>
     <slot name="head" />
   </head>
   <body>
     <div class={wide ? "" : "wrap"}>
       <header class={wide ? "wrap" : ""}>
-        <a class="brand" href="/">
-          <Logo size={48} />
-          <span class="display" style="font-size:26px;font-weight:800;color:var(--ink)">gartha.me</span>
-        </a>
-        <nav>
-          {nav.map((n) => (
-            <a href={n.href} aria-current={n.key === active ? "page" : undefined}>{n.label}</a>
-          ))}
-        </nav>
-        <slot name="header-right" />
+        <div class="strip" style={`clip-path:${tornClip}`}>
+          <nav class="l" aria-label="Main">
+            {navLeft.map((n) => <a href={n.href} aria-current={n.key === active ? "page" : undefined}>{n.label}</a>)}
+          </nav>
+          <a class="brand" href="/" aria-label="gartha.me home">
+            <Logo size={44} label="" />
+            <span class="display" aria-hidden="true">gartha.me</span>
+          </a>
+          <nav aria-label="More">
+            {navRight.map((n) => <a href={n.href} aria-current={n.key === active ? "page" : undefined}>{n.label}</a>)}
+          </nav>
+        </div>
+        <div class="extra"><slot name="header-right" /></div>
       </header>
       <main><slot /></main>
       <footer class={wide ? "wrap" : ""}>
-        <span class="mono">© {new Date().getFullYear()} Gartha · gartha.me</span>
+        <span class="mono">© {new Date().getFullYear()} Gartha · written in chalk</span>
         <ul aria-label="Find me elsewhere">
           {socials.map((s) => (
             <li><a href={s.href} rel={s.href.startsWith("http") ? "me noopener" : undefined}>{s.label}</a></li>

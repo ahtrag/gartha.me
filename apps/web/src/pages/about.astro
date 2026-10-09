@@ -2,41 +2,38 @@
 import { getCollection } from "astro:content";
 import Site from "../layouts/Site.astro";
 import PostCard from "../components/PostCard.astro";
-import { Character } from "@gartha/ui";
+import { Avatar } from "@gartha/ui";
 import { profile, socials } from "../data/profile";
 import { sortNewest } from "../lib/posts";
 
 const recent = sortNewest(await getCollection("blog")).slice(0, 2);
 ---
 
-<Site title="About" description={profile.tagline} active="about">
+<Site title="About" description="About Gartha, a software engineer at Imajinyata who works with AI agents, writes up the setups that stick, and plays ranked games." active="about">
   <section class="hd">
+    <div class="pic"><Avatar size={120} /></div>
     <div class="htext">
-      <span class="mono" style="font-size:14px;font-weight:700;color:#b9c4f5">// character bio</span>
-      <h1 class="display">About {profile.name}</h1>
-      <p class="title">{profile.title}</p>
+      <span class="mono kicker">a little about me</span>
+      <h1 class="display chalk">About {profile.name}</h1>
+      <p class="title">Software Engineer at <a href="https://imajinyata.com" rel="noopener">Imajinyata</a></p>
     </div>
-    <div class="hchar" aria-hidden="true"><Character variant="coder" size={200} /></div>
   </section>
 
   <div class="cols">
     <div class="body">
       {profile.bio.map((p) => <p>{p}</p>)}
+      <p class="find">
+        Find me on {socials.map((s, i) => (
+          <Fragment>{i > 0 && (i === socials.length - 1 ? " or " : ", ")}<a href={s.href} rel={s.href.startsWith("http") ? "me noopener" : undefined}>{s.label}</a></Fragment>
+        ))}.
+      </p>
     </div>
-    <aside class="links">
-      <h2 class="display">Find me</h2>
-      <ul>
-        {socials.map((s) => (
-          <li><a class="link-plain" href={s.href} rel={s.href.startsWith("http") ? "me noopener" : undefined}>{s.label}</a></li>
-        ))}
-      </ul>
-    </aside>
   </div>
 
   {recent.length > 0 && (
     <section class="recent">
-      <span class="mono" style="font-size:14px;font-weight:700;color:var(--muted)">// recent saves</span>
-      <div class="grid">{recent.map((p) => <PostCard post={p} />)}</div>
+      <h2 class="display recent-h">recent notes</h2>
+      <div class="list">{recent.map((p) => <PostCard post={p} />)}</div>
     </section>
   )}
 </Site>
@@ -44,117 +41,75 @@ const recent = sortNewest(await getCollection("blog")).slice(0, 2);
 <style>
   .hd {
     display: flex;
-    justify-content: space-between;
-    gap: 24px;
-    margin-top: 24px;
-    padding: 40px 44px;
-    border-radius: var(--radius-xl);
-    background: var(--blue);
-    box-shadow: 0 8px 0 var(--blue-deep);
-    color: var(--paper);
-    overflow: hidden;
+    align-items: center;
+    gap: 32px;
+  }
+  .pic {
+    flex-shrink: 0;
   }
   .htext {
     display: flex;
     flex-direction: column;
-    gap: 12px;
+    gap: 8px;
+  }
+  .kicker {
+    font-size: 16px;
+    color: var(--chalk-3);
   }
   h1 {
     margin: 0;
-    font-size: 56px;
+    font-size: 70px;
     line-height: 1;
-    font-weight: 800;
   }
   .title {
     margin: 0;
-    font-size: 20px;
-    font-weight: 800;
-    color: var(--bg-bottom);
-  }
-  .hchar {
-    align-self: flex-end;
-    margin-bottom: -84px;
-    flex-shrink: 0;
+    font-size: 24px;
+    color: var(--sky);
   }
   .cols {
-    display: grid;
-    grid-template-columns: minmax(0, 1fr) 280px;
-    gap: 28px;
-    margin-top: 36px;
-    align-items: start;
+    max-width: 760px;
+    margin-top: 44px;
   }
   .body {
-    padding: 36px 44px;
-    border-radius: var(--radius-xl);
-    background: var(--paper);
-    box-shadow: var(--shadow-card);
-    font-size: 19px;
-    line-height: 1.7;
-    font-weight: 500;
-    color: var(--ink-2);
+    font-size: 22px;
+    line-height: 1.6;
+    color: var(--chalk-2);
   }
   .body p {
-    margin: 0 0 16px;
+    margin: 0 0 20px;
     text-wrap: pretty;
   }
   .body p:last-child {
     margin-bottom: 0;
   }
-  .links {
-    padding: 28px;
-    border-radius: var(--radius-xl);
-    background: var(--paper);
-    box-shadow: var(--shadow-card);
+  .find {
+    color: var(--chalk-3);
   }
-  .links h2 {
-    margin: 0 0 16px;
-    font-size: 22px;
-    font-weight: 800;
-  }
-  .links ul {
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-    margin: 0;
-    padding: 0;
-    list-style: none;
-  }
-  .links a {
-    display: flex;
-    align-items: center;
-    height: 48px;
-    padding: 0 18px;
-    border-radius: var(--radius-md);
-    background: var(--blue-tint);
-    font-weight: 800;
+  .recent-h {
+    margin: 0 0 4px;
+    font-size: 30px;
+    color: var(--yellow);
   }
   .recent {
     display: flex;
     flex-direction: column;
-    gap: 16px;
-    margin-top: 48px;
+    gap: 6px;
+    margin-top: 64px;
   }
-  .grid {
-    display: grid;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 28px;
+  .list {
+    border-top: 1px dashed var(--chalk-faint);
   }
-  @media (max-width: 860px) {
-    .cols,
-    .grid {
-      grid-template-columns: 1fr;
-    }
-    .hchar {
-      display: none;
-    }
-  }
-  @media (max-width: 720px) {
-    .hd,
-    .body {
-      padding: 28px 24px;
+  @media (max-width: 640px) {
+    .hd {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 20px;
     }
     h1 {
-      font-size: 40px;
+      font-size: 50px;
+    }
+    .body {
+      font-size: 20px;
     }
   }
 </style>

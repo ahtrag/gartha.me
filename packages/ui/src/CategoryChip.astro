@@ -3,10 +3,6 @@ import type { Category } from "./types";
 export type { Category } from "./types";
 interface Props { category: Category }
 const { category } = Astro.props;
-const tone = {
-  code: "background:var(--blue-tint);color:var(--blue)",
-  games: "background:var(--purple-tint);color:var(--purple-deep)",
-  builds: "background:var(--green-tint);color:var(--green-text)",
-}[category];
+const color = { code: "var(--sky)", games: "var(--pink)", builds: "var(--mint)" }[category];
 ---
-<span class="mono" style={`display:inline-block;padding:4px 12px;border-radius:var(--radius-sm);font-size:13px;font-weight:700;${tone}`}>{category}</span>
+<span class="mono" style={`display:inline-block;padding:2px 10px;border:1.5px solid ${color};color:${color};border-radius:var(--sketch-radius);font-size:14px`}>{category}</span>

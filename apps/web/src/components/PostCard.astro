@@ -1,5 +1,4 @@
 ---
-import { CategoryChip } from "@gartha/ui";
 import { formatDate, readTime } from "../lib/posts";
 import type { CollectionEntry } from "astro:content";
 interface Props {
@@ -9,49 +8,64 @@ const { post } = Astro.props;
 const mins = readTime(post.body ?? "");
 ---
 
-<a class="card link-plain" href={`/blog/${post.id}`} data-category={post.data.category}>
-  <div><CategoryChip category={post.data.category} /></div>
-  <h2 class="display">{post.data.title}</h2>
-  <p>{post.data.description}</p>
-  <div class="meta mono">
-    <time datetime={formatDate(post.data.date)}>{formatDate(post.data.date)}</time>
-    <span>{mins} min</span>
+<a class="row link-plain" href={`/blog/${post.id}`} data-category={post.data.category}>
+  <time class="mono" datetime={formatDate(post.data.date)}>{formatDate(post.data.date)}</time>
+  <div class="text">
+    <h2 class="display">{post.data.title}</h2>
+    <p>{post.data.description}</p>
+    <span class="meta mono">{post.data.category} · {mins} min</span>
   </div>
 </a>
 
 <style>
-  .card {
+  .row {
+    display: grid;
+    grid-template-columns: 130px minmax(0, 1fr);
+    gap: 24px;
+    padding: 26px 0;
+    border-bottom: 1px dashed var(--chalk-faint);
+    color: var(--chalk);
+  }
+  .row:hover {
+    color: var(--chalk);
+  }
+  .row:hover h2 {
+    color: var(--yellow);
+  }
+  time {
+    padding-top: 10px;
+    font-size: 15px;
+    color: var(--chalk-3);
+  }
+  .text {
     display: flex;
     flex-direction: column;
-    justify-content: space-between;
-    gap: 18px;
-    padding: 28px;
-    border-radius: var(--radius-xl);
-    background: var(--paper);
-    box-shadow: var(--shadow-card);
-    color: var(--ink);
-    min-height: 230px;
-    box-sizing: border-box;
+    gap: 6px;
   }
   h2 {
     margin: 0;
-    font-size: 26px;
+    font-size: 30px;
     line-height: 1.15;
-    font-weight: 800;
     text-wrap: pretty;
+    transition: color 0.2s ease;
   }
   p {
     margin: 0;
-    font-size: 15px;
-    line-height: 1.5;
-    font-weight: 600;
-    color: var(--muted);
+    font-size: 20px;
+    line-height: 1.4;
+    color: var(--chalk-2);
   }
   .meta {
-    display: flex;
-    gap: 14px;
-    font-size: 13px;
-    font-weight: 700;
-    color: var(--muted-2);
+    font-size: 14px;
+    color: var(--chalk-3);
+  }
+  @media (max-width: 640px) {
+    .row {
+      grid-template-columns: 1fr;
+      gap: 6px;
+    }
+    time {
+      padding-top: 0;
+    }
   }
 </style>

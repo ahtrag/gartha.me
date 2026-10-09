@@ -1,7 +1,7 @@
 ---
 import { getCollection, render } from "astro:content";
 import Site from "../../layouts/Site.astro";
-import { Avatar } from "@gartha/ui";
+import { Avatar, CategoryChip } from "@gartha/ui";
 import { formatDate, neighbours, readTime, sortNewest } from "../../lib/posts";
 
 export async function getStaticPaths() {
@@ -10,13 +10,28 @@ export async function getStaticPaths() {
 }
 const { post, prev, next } = Astro.props;
 const { Content } = await render(post);
+const published = formatDate(post.data.date);
+const postingLd = {
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  headline: post.data.title,
+  description: post.data.description,
+  datePublished: published,
+  url: new URL(Astro.url.pathname, Astro.site).href,
+  author: { "@type": "Person", name: "Gartha", url: "https://gartha.me" },
+  image: new URL("/og.png", Astro.site).href,
+};
 ---
 
-<Site title={post.data.title} description={post.data.description} active="blog">
-  <Fragment slot="header-right"><a class="back link-plain" href="/blog">← Back to quest log</a></Fragment>
+<Site title={post.data.title} description={post.data.description} active="blog" type="article">
+  <Fragment slot="head">
+    <meta property="article:published_time" content={published} />
+    <script type="application/ld+json" is:inline set:html={JSON.stringify(postingLd)} />
+  </Fragment>
+  <Fragment slot="header-right"><a class="back link-plain hand" href="/blog">⟵ back to the blog</a></Fragment>
   <article>
     <header class="hd">
-      <div style="display:flex;gap:8px"><span class="mono tag">{post.data.category}</span></div>
+      <div><CategoryChip category={post.data.category} /></div>
       <h1 class="display">{post.data.title}</h1>
       <div class="by">
         <Avatar /><b>Gartha</b>
@@ -29,8 +44,8 @@ const { Content } = await render(post);
       {
         prev ? (
           <a class="link-plain" href={`/blog/${prev.id}`}>
-            <small class="mono">PREVIOUS QUEST</small>
-            <b>{prev.data.title}</b>
+            <small class="mono">previous</small>
+            <b class="hand">{prev.data.title}</b>
           </a>
         ) : (
           <span />
@@ -39,8 +54,8 @@ const { Content } = await render(post);
       {
         next ? (
           <a class="r link-plain" href={`/blog/${next.id}`}>
-            <small class="mono">NEXT QUEST</small>
-            <b>{next.data.title}</b>
+            <small class="mono">next</small>
+            <b class="hand">{next.data.title}</b>
           </a>
         ) : (
           <span />
@@ -52,122 +67,142 @@ const { Content } = await render(post);
 
 <style>
   .back {
-    height: 48px;
-    padding: 0 20px;
-    border-radius: var(--radius-md);
-    background: var(--paper);
-    display: flex;
-    align-items: center;
-    font-weight: 800;
-    box-shadow: var(--shadow-card-sm);
+    font-size: 21px;
+    color: var(--chalk-2);
+  }
+  .back:hover {
+    color: var(--yellow);
   }
   article {
-    max-width: 920px;
+    max-width: 780px;
     margin: 0 auto;
     display: flex;
     flex-direction: column;
-    gap: 28px;
+    gap: 36px;
   }
   .hd {
-    position: relative;
-    padding: 40px 44px;
-    border-radius: var(--radius-xl);
-    background: var(--blue);
-    box-shadow: 0 8px 0 var(--blue-deep);
-    color: var(--paper);
     display: flex;
     flex-direction: column;
-    gap: 18px;
-    overflow: hidden;
-  }
-  .tag {
-    padding: 4px 12px;
-    border-radius: var(--radius-sm);
-    background: var(--blue-deep);
-    font-size: 13px;
-    font-weight: 700;
+    gap: 16px;
+    padding-bottom: 26px;
+    border-bottom: 2px dashed var(--chalk-faint);
   }
   h1 {
     margin: 0;
-    font-size: 46px;
-    line-height: 1.08;
-    font-weight: 800;
-    max-width: 700px;
+    font-size: 54px;
+    line-height: 1.05;
+    font-weight: 400;
     text-wrap: pretty;
+    text-shadow: var(--chalk-glow);
   }
   .by {
     display: flex;
     align-items: center;
+    flex-wrap: wrap;
     gap: 14px;
-    font-size: 14px;
-    color: #b9c4f5;
+    font-size: 15px;
+    color: var(--chalk-3);
   }
   .by b {
-    color: var(--paper);
-    font-size: 16px;
+    color: var(--chalk);
+    font-weight: 400;
+    font-size: 21px;
   }
   .body {
-    padding: 44px 48px;
-    border-radius: var(--radius-xl);
-    background: var(--paper);
-    box-shadow: var(--shadow-card);
-    font-size: 19px;
-    line-height: 1.7;
-    font-weight: 600;
-    color: #3a4173;
+    font-size: 21px;
+    line-height: 1.6;
+    color: var(--chalk-2);
+  }
+  .body :global(p),
+  .body :global(ul),
+  .body :global(ol) {
+    margin: 0 0 20px;
+  }
+  .body :global(li) {
+    margin-bottom: 6px;
+  }
+  .body :global(h2),
+  .body :global(h3) {
+    font-family: var(--font-display);
+    line-height: 1.15;
+    color: var(--yellow);
+    text-shadow: var(--chalk-glow);
+    margin: 40px 0 12px;
   }
   .body :global(h2) {
-    font-family: var(--font-display);
-    font-size: 30px;
-    line-height: 1.15;
-    font-weight: 800;
-    color: var(--ink);
-    margin: 32px 0 8px;
+    font-size: 36px;
+  }
+  .body :global(h3) {
+    font-size: 28px;
+  }
+  .body :global(strong) {
+    color: var(--chalk);
+  }
+  .body :global(blockquote) {
+    margin: 0 0 20px;
+    padding: 4px 0 4px 20px;
+    border-left: 3px solid var(--pink);
+    color: var(--chalk);
+  }
+  .body :global(:not(pre) > code) {
+    padding: 1px 6px;
+    border-radius: 4px;
+    background: rgba(243, 241, 231, 0.1);
+    color: var(--mint);
+    font-size: 0.8em;
   }
   .body :global(pre) {
-    border-radius: 20px;
-    padding: 22px 24px;
+    margin: 0 0 24px;
+    border: 2px solid var(--chalk-faint);
+    border-radius: var(--sketch-radius);
+    padding: 20px 22px;
     font-size: 15px;
     line-height: 1.65;
     overflow-x: auto;
   }
-  .body :global(code) {
-    font-family: var(--font-mono);
+  .body :global(img) {
+    max-width: 100%;
+    height: auto;
+  }
+  .body :global(hr) {
+    border: 0;
+    border-top: 2px dashed var(--chalk-faint);
+    margin: 32px 0;
   }
   .pn {
+    border-top: 1px dashed var(--chalk-faint);
     display: grid;
     grid-template-columns: 1fr 1fr;
     gap: 20px;
   }
   .pn a {
-    padding: 20px 24px;
-    border-radius: 22px;
-    background: var(--paper);
-    box-shadow: 0 6px 0 var(--line);
+    padding: 18px 0 0;
     display: flex;
     flex-direction: column;
     gap: 2px;
-    color: var(--ink);
+    color: var(--chalk);
+    transition: border-color 0.2s ease, color 0.2s ease;
+  }
+  .pn a:hover {
+    color: var(--yellow);
   }
   .pn a.r {
     text-align: right;
   }
   .pn small {
-    font-size: 12px;
-    font-weight: 700;
-    color: var(--muted-2);
+    font-size: 14px;
+    color: var(--chalk-3);
   }
   .pn b {
-    font-size: 16px;
-    font-weight: 800;
+    font-weight: 400;
+    font-size: 22px;
   }
   @media (max-width: 720px) {
-    .hd,
-    .body {
-      padding: 28px 24px;
-    }
     h1 {
-      font-size: 34px;
+      font-size: 40px;
+    }
+    .body {
+      font-size: 20px;
     }
     .pn {
       grid-template-columns: 1fr;

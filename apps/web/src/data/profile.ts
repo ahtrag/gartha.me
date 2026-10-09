@@ -1,20 +1,20 @@
 export const profile = {
   name: "Gartha",
   title: "Software Engineer +1",
-  level: 7,
-  xpPercent: 40,
-  stars: 4,
-  tagline: "Ships backend systems by day, grinds ranked lobbies by night.",
+  tagline: "Software engineer at Imajinyata by day, ranked grinder by night.",
   intro:
-    "Ships backend systems by day, grinds ranked lobbies by night. This site is the save file: notes on code, games, and whatever I am building this week.",
+    "Software engineer at Imajinyata by day, ranked grinder by night. This site is the save file: notes on code, games, and whatever I am building this week.",
   bio: [
-    "I'm Gartha, a software engineer who mostly builds backend systems. Lately that means TypeScript on Cloudflare Workers, and a workflow where AI agents do most of the typing while I describe, review, and ship.",
-    "This site is my save file. I write up the setups that actually stuck, like the tools, hooks, and editors I use every day, so the next person (usually future me) doesn't have to rediscover them.",
-    "Outside work I play ranked games, which is where this site gets its look.",
+    "I'm Gartha, a software engineer at Imajinyata. Most of my work runs through a workflow where AI agents do the typing while I describe what I want, review what comes back, and decide what ships.",
+    "This site is my save file. I write up the setups that actually stuck, like wiring the graft code-graph tool into every repo so agents stop grepping blind, and closing VS Code for good to work in the Orca AI coding app, so the next person (usually future me) doesn't have to rediscover them.",
+    "Outside work I play ranked games. In here, everything gets written up on the board.",
   ],
   stack: [
-    { label: "FRONTEND", value: "TypeScript", glyph: "TS", color: "var(--blue)" },
-    { label: "BACKEND", value: "Workers", glyph: "λ", color: "var(--orange)" },
+    { label: "LANGUAGE", value: "TypeScript", glyph: "TS", color: "var(--blue)" },
+    { label: "FRAMEWORK", value: "Astro", glyph: "A", color: "var(--purple)" },
+    { label: "RUNTIME", value: "Workers", glyph: "λ", color: "var(--orange)" },
+    { label: "DATABASE", value: "D1", glyph: "D1", color: "var(--green)" },
+    { label: "TOOLING", value: "Bun", glyph: "B", color: "var(--coral)" },
   ],
   // Entries with an empty href are not rendered; fill them in to show them.
   socials: [

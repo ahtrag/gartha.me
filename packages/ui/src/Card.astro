@@ -1,4 +1,6 @@
 ---
+// A chalk-drawn box. `tone` is kept for older callers: "paper" is a plain
+// outline, "blue" and "dark" fill the box with a slightly lighter slate.
 interface Props {
   title?: string;
   tone?: "paper" | "blue" | "dark";
@@ -6,18 +8,7 @@ interface Props {
   as?: "div" | "section" | "article";
 }
 const { title, tone = "paper", class: cls, as = "div" } = Astro.props as Props;
-const bgByTone: Record<NonNullable<Props["tone"]>, string> = {
-  paper: "var(--paper)",
-  blue: "var(--blue)",
-  dark: "var(--ink)",
-};
-const shadowByTone: Record<NonNullable<Props["tone"]>, string> = {
-  paper: "var(--shadow-card)",
-  blue: "0 8px 0 var(--blue-deep)",
-  dark: "0 8px 0 var(--dark)",
-};
-const bg = bgByTone[tone];
-const shadow = shadowByTone[tone];
+const bg = tone === "paper" ? "transparent" : "var(--board-2)";
 const titleId = title
   ? `card-${title
       .toLowerCase()
@@ -27,12 +18,12 @@ const titleId = title
 const Tag = as;
 ---
 <Tag
-  class={cls}
-  style={`position:relative;padding:${title ? "42px 26px 24px" : "28px"};border-radius:var(--radius-lg);background:${bg};box-shadow:${shadow}`}
+  class:list={["sketch", cls]}
+  style={`position:relative;padding:26px 24px 22px;margin-top:${title ? "44px" : "0"};background:${bg}`}
   aria-labelledby={titleId}
 >
   {title && (
-    <h2 id={titleId} class="display" style="margin:0;position:absolute;left:50%;top:-18px;transform:translateX(-50%);padding:8px 32px;border-radius:var(--radius-md);background:var(--bg-top);color:var(--ink-2);font-size:17px;font-weight:800;letter-spacing:.1em;white-space:nowrap">{title}</h2>
+    <h2 id={titleId} class="display" style="margin:0;position:absolute;left:6px;top:-44px;color:var(--yellow);font-size:28px;line-height:1.2;letter-spacing:.02em;white-space:nowrap;text-shadow:var(--chalk-glow)">{title}</h2>
   )}
   <slot />
 </Tag>

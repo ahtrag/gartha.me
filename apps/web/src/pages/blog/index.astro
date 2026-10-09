@@ -2,58 +2,33 @@
 import { getCollection } from "astro:content";
 import Site from "../../layouts/Site.astro";
 import PostCard from "../../components/PostCard.astro";
-import { Badge, Character } from "@gartha/ui";
-import { formatDate, readTime, sortNewest } from "../../lib/posts";
+import { sortNewest } from "../../lib/posts";
 
 const all = sortNewest(await getCollection("blog"));
-const featured = all.find((p) => p.data.featured) ?? all[0];
-const rest = all.filter((p) => p !== featured);
 const cats = ["all", "code", "games", "builds"] as const;
-const capitalize = (s: string) => s.charAt(0).toUpperCase() + s.slice(1);
 ---
 
 <Site title="Blog" description="Notes on code, games, and builds." active="blog">
   <div class="head">
     <div>
-      <span class="mono" style="font-size:14px;font-weight:700;color:var(--muted)">// quest log</span>
-      <h1 class="display">Blog</h1>
+      <span class="mono kicker">notes on the board</span>
+      <h1 class="display chalk">Blog</h1>
     </div>
     <div class="filters" role="group" aria-label="Filter posts by category">
       {
         cats.map((c) => (
-          <button class="display" data-filter={c} aria-pressed={c === "all"}>
-            {capitalize(c)}
+          <button class="hand" data-filter={c} aria-pressed={c === "all"}>
+            {c}
           </button>
         ))
       }
     </div>
   </div>
 
-  <div class="grid">
-    {
-      featured && (
-        <a class="featured link-plain" href={`/blog/${featured.id}`} data-category={featured.data.category}>
-          <div class="ftext">
-            <div style="display:flex;gap:8px">
-              <Badge color="var(--gold)">FEATURED</Badge>
-              <span class="mono tag">{featured.data.category}</span>
-            </div>
-            <h2 class="display">{featured.data.title}</h2>
-            <p>{featured.data.description}</p>
-            <div class="meta mono">
-              <time datetime={formatDate(featured.data.date)}>{formatDate(featured.data.date)}</time>
-              <span>{readTime(featured.body ?? "")} min</span>
-            </div>
-          </div>
-          <div class="fchar" aria-hidden="true">
-            <Character variant="builder" size={220} />
-          </div>
-        </a>
-      )
-    }
-    {rest.map((p) => <PostCard post={p} />)}
+  <div class="list">
+    {all.map((p) => <PostCard post={p} />)}
   </div>
-  <p class="empty" hidden>No quests in this category yet.</p>
+  <p class="empty" hidden>Nothing written in this corner of the board yet.</p>
 </Site>
 
 <script>
@@ -76,121 +51,59 @@ const capitalize = (s: string) => s.charAt(0).toUpperCase() + s.slice(1);
     justify-content: space-between;
     gap: 16px;
     flex-wrap: wrap;
-    margin-top: 24px;
+  }
+  .kicker {
+    font-size: 16px;
+    color: var(--chalk-3);
   }
   h1 {
     margin: 0;
-    font-size: 56px;
+    font-size: 76px;
     line-height: 1;
-    font-weight: 800;
   }
   .filters {
     display: flex;
-    gap: 10px;
+    gap: 6px;
     flex-wrap: wrap;
   }
   .filters button {
+    position: relative;
     height: 44px;
-    padding: 0 20px;
+    padding: 0 14px;
     border: 0;
-    border-radius: 14px;
-    background: var(--paper);
-    color: var(--muted);
-    font-size: 16px;
-    font-weight: 800;
-    box-shadow: var(--shadow-card-sm);
+    background: none;
+    color: var(--chalk-3);
+    font-size: 23px;
     cursor: pointer;
+    transition: color 0.15s ease;
   }
+  .filters button:hover {
+    color: var(--chalk);
+  }
+  /* The active filter gets circled in chalk. */
   .filters button[aria-pressed="true"] {
-    background: var(--blue);
-    color: var(--paper);
-    box-shadow: 0 4px 0 var(--blue-deep);
+    color: var(--yellow);
+  }
+  .filters button[aria-pressed="true"]::after {
+    content: "";
+    position: absolute;
+    inset: 2px -2px;
+    border: 2px solid var(--yellow);
+    border-radius: 50% 45% 52% 48% / 55% 48% 52% 45%;
+    transform: rotate(-3deg);
   }
   .empty {
     margin: 36px 0 0;
-    font-size: 16px;
-    font-weight: 600;
-    color: var(--muted);
+    color: var(--chalk-3);
     text-align: center;
   }
-  .grid {
-    display: grid;
-    grid-template-columns: repeat(3, minmax(0, 1fr));
-    gap: 28px;
-    margin-top: 36px;
-  }
-  .featured {
-    grid-column: span 2;
-    display: flex;
-    justify-content: space-between;
-    gap: 24px;
-    padding: 32px;
-    border-radius: var(--radius-xl);
-    background: var(--blue);
-    box-shadow: 0 8px 0 var(--blue-deep);
-    color: var(--paper);
-    overflow: hidden;
-    min-height: 250px;
-    box-sizing: border-box;
-  }
-  .ftext {
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-    gap: 18px;
-  }
-  .tag {
-    padding: 4px 12px;
-    border-radius: var(--radius-sm);
-    background: var(--blue-deep);
-    font-size: 13px;
-    font-weight: 700;
-  }
-  .featured h2 {
-    margin: 0;
-    font-size: 36px;
-    line-height: 1.1;
-    font-weight: 800;
-    max-width: 520px;
-    text-wrap: pretty;
-  }
-  .featured p {
-    margin: 0;
-    font-size: 17px;
-    line-height: 1.5;
-    font-weight: 600;
-    color: var(--bg-bottom);
-    max-width: 520px;
-  }
-  .featured .meta {
-    display: flex;
-    gap: 14px;
-    font-size: 14px;
-    font-weight: 700;
-    color: #b9c4f5;
-  }
-  .fchar {
-    align-self: flex-end;
-    margin-bottom: -60px;
-    flex-shrink: 0;
-  }
-  @media (max-width: 1000px) {
-    .grid {
-      grid-template-columns: 1fr 1fr;
-    }
-    .featured {
-      grid-column: span 2;
-    }
-    .fchar {
-      display: none;
-    }
+  .list {
+    margin-top: 28px;
+    border-top: 1px dashed var(--chalk-faint);
   }
   @media (max-width: 640px) {
-    .grid {
-      grid-template-columns: 1fr;
-    }
-    .featured {
-      grid-column: span 1;
+    h1 {
+      font-size: 60px;
     }
   }
 </style>

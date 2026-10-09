@@ -1,69 +1,185 @@
+/*
+ * Chalkboard theme. Everything is chalk on a dark slate board, with a torn
+ * paper strip for the header. Accent colors are soft chalk pastels.
+ */
 :root {
-  --font-display: "Baloo 2", "Trebuchet MS", system-ui, sans-serif;
-  --font-body: "Nunito", "Trebuchet MS", system-ui, sans-serif;
-  --font-mono: "JetBrains Mono", Menlo, monospace;
+  color-scheme: dark;
 
-  --ink: #2f3561;
-  --ink-2: #4a5187;
-  --muted: #6b72a3;
-  --muted-2: #9aa0c7;
-  --paper: #ffffff;
-  --bg-top: #eef1fc;
-  --bg-bottom: #dfe5fa;
-  --line: #cdd5f3;
-  --track: #c3caf0;
+  --font-display: "Fredericka the Great", "Chalkboard SE", "Comic Sans MS", cursive;
+  --font-hand: "Patrick Hand", "Chalkboard SE", "Comic Sans MS", cursive;
+  --font-body: var(--font-hand);
+  --font-type: "Special Elite", "American Typewriter", "Courier New", monospace;
+  --font-mono: var(--font-type);
+  --font-code: "JetBrains Mono", ui-monospace, Menlo, monospace;
 
-  --blue: #3b5bdb;
-  --blue-deep: #2f49b8;
-  --green: #2ecc71;
-  --green-deep: #1a8a4a;
-  --coral: #ff5f6d;
-  --orange: #ff8c42;
-  --gold: #ffb020;
-  --gold-deep: #b26a00;
-  --purple: #c86dff;
-  --purple-deep: #8a3fc2;
-  --skin: #ffcfa8;
-  --dark: #1f2447;
+  --board: #242927;
+  --board-2: #323834;
+  --board-3: #3b423d;
+  --chalk: #f3f1e7;
+  --chalk-2: rgba(243, 241, 231, 0.82);
+  --chalk-3: rgba(243, 241, 231, 0.62);
+  --chalk-line: rgba(243, 241, 231, 0.7);
+  --chalk-faint: rgba(243, 241, 231, 0.22);
+  --paper-strip: #f1eee4;
+  --paper-ink: #2b2d2a;
 
-  --blue-tint: #e6ebff;
-  --purple-tint: #f3e6ff;
-  --green-tint: #e3f9ec;
-  --green-text: #157a40;
+  --yellow: #f5e07e;
+  --pink: #f4a9b9;
+  --sky: #a6d6f2;
+  --mint: #8fe0bf;
+  --teal: #43cfa4;
 
-  --radius-sm: 10px;
-  --radius-md: 16px;
-  --radius-lg: 26px;
-  --radius-xl: 28px;
+  /* Legacy names, mapped onto the chalk palette so older views keep working. */
+  --ink: var(--chalk);
+  --ink-2: var(--chalk-2);
+  --muted: var(--chalk-3);
+  --muted-2: rgba(243, 241, 231, 0.5);
+  --paper: var(--board-2);
+  --bg-top: var(--board-3);
+  --bg-bottom: var(--board);
+  --line: var(--chalk-faint);
+  --track: var(--chalk-faint);
+  --blue: var(--sky);
+  --blue-deep: #6aa9cf;
+  --green: var(--mint);
+  --green-deep: #2f8f6c;
+  --coral: var(--pink);
+  --orange: #f6be8a;
+  --gold: var(--yellow);
+  --gold-deep: #9a7d1c;
+  --purple: #d2b4f2;
+  --purple-deep: #7f5aa8;
+  --skin: #e9c4a4;
+  --dark: #1e2220;
+  --blue-tint: rgba(166, 214, 242, 0.14);
+  --purple-tint: rgba(210, 180, 242, 0.14);
+  --green-tint: rgba(143, 224, 191, 0.14);
+  --green-text: var(--mint);
 
-  --shadow-card: 0 8px 0 var(--line);
-  --shadow-card-sm: 0 4px 0 var(--line);
-  --shadow-primary: 0 7px 0 var(--blue-deep);
+  /* Hand-drawn corners: uneven radii make a box look sketched. */
+  --sketch-radius: 18px 6px 20px 8px / 8px 18px 6px 20px;
+  --sketch-radius-pill: 28px 10px 26px 12px / 12px 26px 10px 28px;
+  --radius-sm: 8px;
+  --radius-md: 12px;
+  --radius-lg: 18px;
+  --radius-xl: 20px;
+
+  --shadow-card: none;
+  --shadow-card-sm: none;
+  --shadow-primary: none;
+
+  --chalk-glow: 0 0 1px rgba(243, 241, 231, 0.45), 0 0 8px rgba(243, 241, 231, 0.08);
+  --grain: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='220'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 -1.6 1.75'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
 }
 
 body {
   margin: 0;
   font-family: var(--font-body);
-  color: var(--ink);
-  background: linear-gradient(180deg, var(--bg-top) 0%, var(--bg-bottom) 100%);
+  font-size: 19px;
+  color: var(--chalk);
   min-height: 100vh;
+  background-color: var(--board);
+}
+
+/*
+ * The board itself: a pre-rendered image of a used chalkboard (cloudy
+ * eraser haze, arc-shaped swipe marks, chalk dust, darker edges) with fine
+ * grain on top. It sits on a fixed layer so it also stays put on iOS, where
+ * background-attachment: fixed is ignored. The image lives in
+ * apps/web/public/chalkboard.webp.
+ */
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+  background-color: var(--board);
+  background-image:
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 .07 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E"),
+    url("/chalkboard.webp");
+  background-size: 300px 300px, cover;
+  background-position: 0 0, center;
+}
+body > * {
+  position: relative;
+  z-index: 1;
+}
+
+::selection {
+  background: var(--yellow);
+  color: var(--paper-ink);
 }
 
 a {
-  color: var(--blue);
+  color: var(--yellow);
+  text-decoration-thickness: 1px;
+  text-underline-offset: 4px;
 }
 a:hover {
-  color: var(--blue-deep);
+  color: var(--chalk);
 }
+:focus-visible {
+  outline: 2px dashed var(--yellow);
+  outline-offset: 4px;
+}
+
 .display {
   font-family: var(--font-display);
+  font-weight: 400;
 }
-.mono {
-  font-family: var(--font-mono);
+.hand {
+  font-family: var(--font-hand);
 }
+.mono,
+.type {
+  font-family: var(--font-type);
+}
+code,
+pre,
+kbd {
+  font-family: var(--font-code);
+}
+
+/* Chalk lettering: soft glow plus grain that eats into the strokes. */
+.chalk {
+  color: var(--chalk);
+  text-shadow: var(--chalk-glow);
+}
+
+/* Page titles get written onto the board, left to right. */
+h1.chalk {
+  animation: chalk-write 1s cubic-bezier(0.5, 0, 0.3, 1) 0.1s both;
+}
+@keyframes chalk-write {
+  from {
+    clip-path: inset(-10% 100% -10% 0);
+  }
+  to {
+    clip-path: inset(-10% -2% -10% 0);
+  }
+}
+
+/* A box drawn by hand in chalk. */
+.sketch {
+  border: 2px solid var(--chalk-line);
+  border-radius: var(--sketch-radius);
+}
+
 .link-plain {
   text-decoration: none;
 }
 [hidden] {
   display: none !important;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    animation-delay: 0s !important;
+    transition-duration: 0.01ms !important;
+  }
 }

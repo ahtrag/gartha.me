@@ -11,3 +11,6 @@ dist/
 design/gartha-me.html
 .astro/
 worker-configuration.d.ts
+
+# graft's local graph cache — regenerable, not committed (run `graft build`).
+/graft/

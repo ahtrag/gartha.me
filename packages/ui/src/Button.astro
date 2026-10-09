@@ -11,7 +11,7 @@ const cls = [
 ---
 <a
   href={href}
-  class={`display ${cls}`}
+  class={`hand ${cls}`}
   aria-disabled={disabled ? "true" : undefined}
   tabindex={disabled ? -1 : undefined}
 ><slot /></a>
@@ -20,47 +20,36 @@ const cls = [
   .btn {
     display: inline-flex;
     align-items: center;
-    height: 64px;
-    padding: 0 32px;
-    border-radius: 20px;
+    min-height: 52px;
+    padding: 0 26px;
+    border: 2px solid var(--chalk);
+    border-radius: var(--sketch-radius-pill);
     font-size: 22px;
-    font-weight: 800;
     text-decoration: none;
-    background: var(--blue);
-    color: var(--paper);
-    box-shadow: var(--shadow-primary);
-    transition: transform 0.1s ease, box-shadow 0.1s ease;
+    background: var(--chalk);
+    color: var(--paper-ink);
+    transition: transform 0.15s ease, background-color 0.15s ease, color 0.15s ease;
   }
-
-  .btn--secondary {
-    background: var(--paper);
-    color: var(--blue);
-    box-shadow: 0 7px 0 var(--line);
-  }
-
   .btn:hover {
-    transform: translateY(2px);
-    box-shadow: 0 5px 0 var(--blue-deep);
+    color: var(--paper-ink);
+    background: var(--yellow);
+    border-color: var(--yellow);
+    transform: rotate(-1.5deg);
   }
-
+  .btn--secondary {
+    background: transparent;
+    color: var(--chalk);
+    border-color: var(--chalk-line);
+  }
   .btn--secondary:hover {
-    box-shadow: 0 5px 0 var(--line);
+    background: transparent;
+    color: var(--yellow);
+    border-color: var(--yellow);
+    transform: rotate(1.5deg);
   }
-
   .btn:active {
-    transform: translateY(5px);
-    box-shadow: 0 2px 0 var(--blue-deep);
+    transform: scale(0.97);
   }
-
-  .btn--secondary:active {
-    box-shadow: 0 2px 0 var(--line);
-  }
-
-  .btn:focus-visible {
-    outline: 3px solid var(--blue-deep);
-    outline-offset: 3px;
-  }
-
   .btn--disabled {
     opacity: 0.5;
     pointer-events: none;

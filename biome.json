@@ -11,7 +11,8 @@
       "design/**",
       "**/.astro/**",
       "**/*.astro",
-      "**/worker-configuration.d.ts"
+      "**/worker-configuration.d.ts",
+      "graft/**"
     ]
   }
 }

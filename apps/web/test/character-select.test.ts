@@ -12,11 +12,16 @@ function setup() {
       <span data-character-label>PROGRAMMER</span>
     </div>
   `;
-  const root = document.querySelector<HTMLElement>("[data-character-select]")!;
-  const prev = root.querySelector<HTMLButtonElement>("[data-step=\"-1\"]")!;
-  const next = root.querySelector<HTMLButtonElement>("[data-step=\"1\"]")!;
+  const pick = <T extends Element>(scope: ParentNode, selector: string): T => {
+    const el = scope.querySelector<T>(selector);
+    if (!el) throw new Error(`missing ${selector}`);
+    return el;
+  };
+  const root = pick<HTMLElement>(document, "[data-character-select]");
+  const prev = pick<HTMLButtonElement>(root, '[data-step="-1"]');
+  const next = pick<HTMLButtonElement>(root, '[data-step="1"]');
   const slides = root.querySelectorAll<HTMLElement>("[data-slide]");
-  const label = root.querySelector<HTMLElement>("[data-character-label]")!;
+  const label = pick<HTMLElement>(root, "[data-character-label]");
   initCharacterSelect(root);
   return { root, prev, next, slides, label };
 }

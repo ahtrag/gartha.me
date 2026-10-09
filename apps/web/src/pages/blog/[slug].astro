@@ -243,8 +243,13 @@ const postingLd = {
   }
 
   /* Copy button on code blocks. */
-  .body :global(pre) {
+  /* The frame holds the copy button so it stays put while code scrolls. */
+  .body :global(.code-wrap) {
     position: relative;
+    margin: 0 0 24px;
+  }
+  .body :global(.code-wrap pre) {
+    margin: 0;
   }
   .body :global(.copy) {
     position: absolute;
@@ -264,7 +269,7 @@ const postingLd = {
       border-color 0.2s ease,
       transform 0.2s ease;
   }
-  .body :global(pre:hover .copy),
+  .body :global(.code-wrap:hover .copy),
   .body :global(.copy:focus-visible) {
     opacity: 1;
   }
@@ -375,8 +380,13 @@ const postingLd = {
   }
 
   /* Copy button on code blocks. */
-  .body :global(pre) {
+  /* The frame holds the copy button so it stays put while code scrolls. */
+  .body :global(.code-wrap) {
     position: relative;
+    margin: 0 0 24px;
+  }
+  .body :global(.code-wrap pre) {
+    margin: 0;
   }
   .body :global(.copy) {
     position: absolute;
@@ -396,7 +406,7 @@ const postingLd = {
       border-color 0.2s ease,
       transform 0.2s ease;
   }
-  .body :global(pre:hover .copy),
+  .body :global(.code-wrap:hover .copy),
   .body :global(.copy:focus-visible) {
     opacity: 1;
   }

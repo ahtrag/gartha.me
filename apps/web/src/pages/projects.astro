@@ -20,6 +20,11 @@ import { projects } from "../data/projects";
               {p.status && <span class="mono status">{p.status}</span>}
             </div>
             <p>{p.description}</p>
+            {p.madeFor && (
+              <p class="made-for">
+                Made to help <a href={p.madeFor.href} rel="noopener">{p.madeFor.name}</a> {p.madeFor.purpose}.
+              </p>
+            )}
           </div>
           <ul class="stack" aria-label={`${p.name} stack`}>
             {p.stack.map((s) => (
@@ -101,6 +106,13 @@ import { projects } from "../data/projects";
     line-height: 1.45;
     color: var(--chalk-2);
     max-width: 640px;
+  }
+  .made-for {
+    font-size: 20px;
+    color: var(--chalk);
+  }
+  .made-for a {
+    color: var(--yellow);
   }
   .stack {
     display: flex;

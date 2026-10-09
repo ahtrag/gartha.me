@@ -41,7 +41,9 @@ export function markWhenSeen(els: Iterable<Element>): void {
 }
 
 /**
- * Gives every code block a "copy" button. After copying it reads "copied"
+ * Gives every code block a "copy" button. Each <pre> is wrapped in a
+ * `.code-wrap` frame that holds the button, so the button stays pinned to the
+ * corner while long lines scroll sideways. After copying it reads "copied"
  * for a moment, then goes back.
  */
 export function addCopyButtons(root: ParentNode, clipboard?: Pick<Clipboard, "writeText">): void {
@@ -66,6 +68,9 @@ export function addCopyButtons(root: ParentNode, clipboard?: Pick<Clipboard, "wr
         btn.classList.remove("done");
       }, 1600);
     });
-    pre.append(btn);
+    const wrap = pre.ownerDocument.createElement("div");
+    wrap.className = "code-wrap";
+    pre.before(wrap);
+    wrap.append(pre, btn);
   }
 }

@@ -7,7 +7,9 @@ describe("addCopyButtons", () => {
     document.body.innerHTML = "<pre><code>npm i graft</code></pre><pre><code>ls</code></pre>";
     const writeText = vi.fn().mockResolvedValue(undefined);
     addCopyButtons(document, { writeText });
-    const buttons = document.querySelectorAll<HTMLButtonElement>("pre > button.copy");
+    const buttons = document.querySelectorAll<HTMLButtonElement>(".code-wrap > button.copy");
+    expect(document.querySelectorAll(".code-wrap > pre")).toHaveLength(2);
+    expect(document.querySelector("pre button")).toBeNull();
     expect(buttons).toHaveLength(2);
     buttons[0]?.click();
     await Promise.resolve();

@@ -10,6 +10,8 @@
 const sets = [
   { key: "programmer", name: "programmer" },
   { key: "gamer", name: "gamer" },
+  { key: "husband", name: "husband" },
+  { key: "father", name: "father" },
 ] as const;
 const stars: [number, number, number][] = [
   [150, 36, 0.9], [36, 232, 1.1], [116, 470, 0.8], [552, 236, 1], [520, 60, 0.7],
@@ -33,7 +35,7 @@ const stars: [number, number, number][] = [
     {sets.map((set, i) => (
       <div class="slide" data-slide data-name={set.name} hidden={i !== 0}>
         <svg class="layer" viewBox="0 0 600 640" aria-hidden="true">
-          {set.key === "programmer" ? (
+          {set.key === "programmer" && (
             <Fragment>
               <g class="float" style="--d:.5s;--f:5.5s">
                 <g transform="translate(36 86) scale(1.35)">
@@ -78,7 +80,8 @@ const stars: [number, number, number][] = [
               </g>
               <path class="dash" style="--d:1.6s" d="M404 560 C 420 584 436 566 446 548" />
             </Fragment>
-          ) : (
+          )}
+          {set.key === "gamer" && (
             <Fragment>
               <g class="float" style="--d:.5s;--f:5.5s">
                 <g transform="translate(30 92) scale(1.3)">
@@ -125,6 +128,116 @@ const stars: [number, number, number][] = [
                   <path pathLength="1" d="M60 54 a3 3 0 1 0 0.1 0" />
                 </g>
                 <text x="452" y="590" class="note">ranked</text>
+              </g>
+              <path class="dash" style="--d:1.6s" d="M404 560 C 420 584 436 566 452 552" />
+            </Fragment>
+          )}
+          {set.key === "husband" && (
+            <Fragment>
+              <g class="float" style="--d:.5s;--f:5.5s">
+                <g transform="translate(34 92) scale(1.3)">
+                  <path pathLength="1" d="M14 40 A16 16 0 1 0 46 40 A16 16 0 1 0 14 40" />
+                  <path pathLength="1" d="M36 40 A16 16 0 1 0 68 40 A16 16 0 1 0 36 40" />
+                  <path pathLength="1" d="M24 22 L30 14 L36 22 L30 27 Z" />
+                  <path pathLength="1" class="blink" d="M58 10 V18 M54 14 H62" />
+                </g>
+              </g>
+              <path class="dash" style="--d:.9s" d="M150 150 C 176 166 168 198 196 210" />
+
+              <g class="float" style="--d:.7s;--f:6.5s">
+                <g transform="translate(58 318) scale(1.15)">
+                  <path pathLength="1" d="M6 26 H30 V48 Q30 56 22 56 H14 Q6 56 6 48 Z" />
+                  <path pathLength="1" d="M30 32 H33 Q38 32 38 38 Q38 44 33 44 H30" />
+                  <path pathLength="1" d="M42 26 H66 V48 Q66 56 58 56 H50 Q42 56 42 48 Z" />
+                  <path pathLength="1" d="M66 32 H69 Q74 32 74 38 Q74 44 69 44 H66" />
+                  <g class="beat">
+                    <path pathLength="1" d="M36 20 C 28 14 30 6 36 10 C 42 6 44 14 36 20 Z" />
+                  </g>
+                </g>
+                <text x="70" y="414" class="note">date night</text>
+              </g>
+              <path class="string" pathLength="1" style="--d:1.1s" d="M150 372 C 168 380 174 352 194 356" />
+
+              <g class="float" style="--d:.9s;--f:5s">
+                <text x="466" y="124" class="word">us</text>
+              </g>
+              <path class="string" pathLength="1" style="--d:1.2s" d="M406 190 C 424 186 420 158 436 150 C 452 142 458 166 444 168 C 432 170 438 140 456 132" />
+
+              <g class="float" style="--d:1.1s;--f:6s">
+                <g transform="translate(446 290) scale(1.3)">
+                  <path pathLength="1" d="M6 12 H72 V52 H6 Z" />
+                  <path pathLength="1" d="M6 12 L39 34 L72 12" />
+                  <g class="beat">
+                    <path pathLength="1" d="M39 47 C 32 42 33 36 39 39 C 45 36 46 42 39 47 Z" />
+                  </g>
+                </g>
+              </g>
+              <path class="dash" style="--d:1.4s" d="M408 330 C 424 316 434 338 446 328" />
+
+              <g class="float" style="--d:1.3s;--f:7s">
+                <g transform="translate(428 482)">
+                  <path pathLength="1" d="M14 34 L48 10 L82 34" />
+                  <path pathLength="1" d="M20 30 V62 H76 V30" />
+                  <path pathLength="1" d="M34 62 V46 H46 V62" />
+                  <path pathLength="1" d="M66 22 V14 H72 V26" />
+                  <path pathLength="1" class="blink" d="M62 50 C 56 45 57 39 62 42 C 67 39 68 45 62 50 Z" />
+                </g>
+                <text x="458" y="586" class="note">home</text>
+              </g>
+              <path class="dash" style="--d:1.6s" d="M404 560 C 420 584 436 566 446 548" />
+            </Fragment>
+          )}
+          {set.key === "father" && (
+            <Fragment>
+              <g class="float" style="--d:.5s;--f:5.5s">
+                <g transform="translate(30 88) scale(1.3)">
+                  <path pathLength="1" d="M14 30 A26 26 0 0 1 40 4 V30 Z" />
+                  <path pathLength="1" d="M14 30 H66 Q66 46 50 48 H30 Q14 46 14 30 Z" />
+                  <path pathLength="1" d="M66 30 L76 8 H84" />
+                  <path pathLength="1" d="M28 50 a6 6 0 1 0 0.1 0 M54 50 a6 6 0 1 0 0.1 0" />
+                </g>
+              </g>
+              <path class="dash" style="--d:.9s" d="M150 150 C 176 166 168 198 196 210" />
+
+              <g class="float" style="--d:.7s;--f:6.5s">
+                <g transform="translate(66 312) scale(1.15)">
+                  <path pathLength="1" d="M20 8 a5 5 0 1 0 0.1 0 M40 8 a5 5 0 1 0 0.1 0" />
+                  <path pathLength="1" d="M18 22 A12 12 0 1 0 42 22 A12 12 0 1 0 18 22" />
+                  <path pathLength="1" d="M18 54 C 13 38 22 33 30 33 C 38 33 47 38 42 54 Z" />
+                  <path pathLength="1" d="M26 20 h0.1 M34 20 h0.1 M28 26 Q30 28 32 26" />
+                </g>
+                <text x="70" y="414" class="note">bedtime</text>
+              </g>
+              <path class="string" pathLength="1" style="--d:1.1s" d="M142 372 C 164 380 172 352 194 356" />
+
+              <g class="float" style="--d:.9s;--f:5s">
+                <g transform="translate(450 74) scale(1.25)">
+                  <g class="wiggle">
+                    <path pathLength="1" d="M30 24 C 18 10 6 14 8 24 C 10 34 22 34 30 24 Z" />
+                    <path pathLength="1" d="M30 24 C 42 10 54 14 52 24 C 50 34 38 34 30 24 Z" />
+                    <path pathLength="1" d="M27 21 H33 V27 H27 Z" />
+                    <path pathLength="1" d="M28 27 L22 44 M32 27 L38 44" />
+                  </g>
+                </g>
+              </g>
+              <path class="string" pathLength="1" style="--d:1.2s" d="M406 190 C 424 186 420 158 436 150 C 452 142 458 166 444 168 C 432 170 438 140 456 132" />
+
+              <g class="float" style="--d:1.1s;--f:6s">
+                <g transform="translate(414 284) scale(1.3)">
+                  <path pathLength="1" d="M36 6 Q40 1 44 6 V12 H36 Z" />
+                  <path pathLength="1" d="M32 12 H48 V18 H32 Z" />
+                  <path pathLength="1" d="M33 18 H47 V50 Q47 55 42 55 H38 Q33 55 33 50 Z" />
+                  <path pathLength="1" class="hatch" d="M38 28 H42 M38 36 H42 M38 44 H42" />
+                </g>
+              </g>
+              <path class="dash" style="--d:1.4s" d="M408 330 C 424 316 434 338 452 334" />
+
+              <g class="float" style="--d:1.3s;--f:7s">
+                <g transform="translate(430 484)">
+                  <path pathLength="1" d="M52 12 A22 22 0 1 0 74 46 A17 17 0 1 1 52 12 Z" />
+                  <path pathLength="1" class="blink" d="M20 18 V28 M15 23 H25 M86 20 V28 M82 24 H90" />
+                </g>
+                <text x="446" y="590" class="note">night shift</text>
               </g>
               <path class="dash" style="--d:1.6s" d="M404 560 C 420 584 436 566 452 552" />
             </Fragment>

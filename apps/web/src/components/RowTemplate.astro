@@ -1,0 +1,15 @@
+---
+// The post-row template the Worker clones for each post (see PostCard).
+import PostCard from "./PostCard.astro";
+---
+<template data-tpl="row">
+  <PostCard
+    slug="__ROW_SLUG__"
+    title="__ROW_TITLE__"
+    description="__ROW_DESC__"
+    date="__ROW_DATE__"
+    category="__ROW_CAT__"
+    minutes="__ROW_MIN__"
+    index="__ROW_I__"
+  />
+</template>

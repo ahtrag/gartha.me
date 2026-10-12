@@ -13,7 +13,8 @@ routes = [
 directory = "../web/dist"
 binding = "ASSETS"
 not_found_handling = "404-page"
-run_worker_first = ["/api/*"]
+# Pages that show posts are rendered by the Worker from D1 (src/pages).
+run_worker_first = ["/api/*", "/", "/index.html", "/blog", "/blog/*", "/about", "/about/*", "/templates/*"]
 
 [[d1_databases]]
 binding = "DB"

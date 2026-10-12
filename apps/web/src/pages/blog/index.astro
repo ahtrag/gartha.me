@@ -1,10 +1,9 @@
 ---
-import { getCollection } from "astro:content";
+// The post list is filled in per request by the Worker from D1
+// (apps/api/src/pages): it replaces <!--@rows--> with one row per post.
 import Site from "../../layouts/Site.astro";
-import PostCard from "../../components/PostCard.astro";
-import { sortNewest } from "../../lib/posts";
+import RowTemplate from "../../components/RowTemplate.astro";
 
-const all = sortNewest(await getCollection("blog"));
 const cats = ["all", "code", "games", "builds"] as const;
 ---
 
@@ -25,9 +24,8 @@ const cats = ["all", "code", "games", "builds"] as const;
     </div>
   </div>
 
-  <div class="list">
-    {all.map((p, i) => <PostCard post={p} index={i} />)}
-  </div>
+  <div class="list"><Fragment set:html="<!--@rows-->" /></div>
+  <RowTemplate />
   <p class="empty" hidden>Nothing written in this corner of the board yet.</p>
 </Site>
 

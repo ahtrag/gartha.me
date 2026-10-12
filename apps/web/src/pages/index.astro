@@ -1,22 +1,11 @@
 ---
-import { getCollection } from "astro:content";
+// The latest note and the post counts are filled in per request by the
+// Worker from D1 (apps/api/src/pages): __LATEST_*__, __FACTS__ and the
+// <!--@if:latest--> block.
 import Site from "../layouts/Site.astro";
 import ChalkStage from "../components/ChalkStage.astro";
 import { Button } from "@gartha/ui";
 import { profile } from "../data/profile";
-import { formatDate, readTime, sortNewest, wordCount } from "../lib/posts";
-
-const posts = sortNewest(await getCollection("blog"));
-const latest = posts[0];
-const words = posts.reduce((n, p) => n + wordCount(p.body ?? ""), 0);
-const readMins = posts.reduce((n, p) => n + readTime(p.body ?? ""), 0);
-const compact = (n: number) => (n >= 1000 ? `${(n / 1000).toFixed(1)}k` : String(n));
-const facts = [
-  `${posts.length} posts`,
-  `${compact(words)} words`,
-  `${readMins} min of reading`,
-  ...(latest ? [`last written ${formatDate(latest.data.date)}`] : []),
-];
 ---
 <Site title="Gartha · Software Engineer" description={profile.tagline} active="home">
   <section class="hero">
@@ -29,13 +18,13 @@ const facts = [
         <Button href="/blog">read the blog</Button>
         <a class="more" href="/about">about me ⟶</a>
       </div>
-      {latest && (
-        <a class="latest link-plain" href={`/blog/${latest.id}`}>
-          <span class="mono tag">latest note</span>
-          <span class="arrow" aria-hidden="true">⟶</span>
-          <b>{latest.data.title}</b>
-        </a>
-      )}
+      <Fragment set:html="<!--@if:latest-->" />
+      <a class="latest link-plain" href="/blog/__LATEST_SLUG__/">
+        <span class="mono tag">latest note</span>
+        <span class="arrow" aria-hidden="true">⟶</span>
+        <b>__LATEST_TITLE__</b>
+      </a>
+      <Fragment set:html="<!--@endif:latest-->" />
     </div>
 
     <ChalkStage />
@@ -43,7 +32,7 @@ const facts = [
 
   <section class="facts mono" aria-label="At a glance">
     <p>{profile.stack.map((t) => t.value).join(" · ")}</p>
-    <p>{facts.join(" · ")}</p>
+    <p>__FACTS__</p>
   </section>
 </Site>
 

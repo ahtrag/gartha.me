@@ -1,26 +1,32 @@
 ---
-import { formatDate, readTime } from "../lib/posts";
-import type { CollectionEntry } from "astro:content";
+// One row in a list of posts. Rendered by Astro only as a template with
+// __ROW_*__ placeholders; the Worker fills one in per post from D1
+// (apps/api/src/pages). Keep the placeholder names in sync with it.
 interface Props {
-  post: CollectionEntry<"blog">;
+  slug: string;
+  title: string;
+  description: string;
+  /** YYYY-MM-DD */
+  date: string;
+  category: string;
+  minutes: string | number;
   /** Position in the list, used to stagger the rows as they settle in. */
-  index?: number;
+  index?: string | number;
 }
-const { post, index = 0 } = Astro.props;
-const mins = readTime(post.body ?? "");
+const { slug, title, description, date, category, minutes, index = 0 } = Astro.props;
 ---
 
-<a class="row link-plain" href={`/blog/${post.id}`} data-category={post.data.category} style={`--i:${index}`}>
-  <time class="mono" datetime={formatDate(post.data.date)}>{formatDate(post.data.date)}</time>
+<a class="row link-plain" href={`/blog/${slug}/`} data-category={category} style={`--i:${index}`}>
+  <time class="mono" datetime={date}>{date}</time>
   <div class="text">
     <h2 class="display">
-      {post.data.title}
+      {title}
       <svg class="underline" viewBox="0 0 300 12" preserveAspectRatio="none" aria-hidden="true">
         <path pathLength="1" d="M2 8 C 50 3 90 11 150 6 S 250 3 298 7" />
       </svg>
     </h2>
-    <p>{post.data.description}</p>
-    <span class="meta mono">{post.data.category} · {mins} min</span>
+    <p>{description}</p>
+    <span class="meta mono">{category} · {minutes} min</span>
   </div>
   <span class="go" aria-hidden="true">
     <svg width="34" height="22" viewBox="0 0 34 22"><path d="M2 10 C 12 12 22 11 31 11 M24 3 L32 11 L24 19" /></svg>

@@ -15,9 +15,11 @@ interface Props {
   /** Site-relative path to the link-preview image. */
   image?: string;
   type?: "website" | "article";
+  /** Path for the canonical URL, when the page is a template served at another path. */
+  path?: string;
 }
-const { title, description, active = "home", wide = false, image = "/og.png", type = "website" } = Astro.props;
-const canonicalUrl = new URL(Astro.url.pathname, Astro.site);
+const { title, description, active = "home", wide = false, image = "/og.png", type = "website", path } = Astro.props;
+const canonicalUrl = new URL(path ?? Astro.url.pathname, Astro.site);
 const fullTitle = `${title} · gartha.me`;
 const imageUrl = new URL(image, Astro.site).href;
 const imageAlt = "Gartha, Software Engineer at Imajinyata. gartha.me";

@@ -17,7 +17,8 @@
     "format": "biome format --write .",
     "typecheck": "turbo run typecheck",
     "deploy:cf": "bun run build && bun run deploy:remote",
-    "deploy:remote": "bun run --cwd apps/api migrate:remote && bun run --cwd apps/api deploy"
+    "deploy:remote": "bun run --cwd apps/api migrate:remote && bun run --cwd apps/api deploy",
+    "posts": "bun run --cwd apps/api posts"
   },
   "devDependencies": {
     "@biomejs/biome": "^1.9.4",

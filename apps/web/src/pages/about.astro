@@ -1,12 +1,9 @@
 ---
-import { getCollection } from "astro:content";
+// "Recent notes" is filled in per request by the Worker from D1.
 import Site from "../layouts/Site.astro";
-import PostCard from "../components/PostCard.astro";
+import RowTemplate from "../components/RowTemplate.astro";
 import { Avatar } from "@gartha/ui";
 import { profile, socials } from "../data/profile";
-import { sortNewest } from "../lib/posts";
-
-const recent = sortNewest(await getCollection("blog")).slice(0, 2);
 ---
 
 <Site title="About" description="About Gartha, a software engineer at Imajinyata who works with AI agents, writes up the setups that stick, and plays ranked games." active="about">
@@ -30,12 +27,13 @@ const recent = sortNewest(await getCollection("blog")).slice(0, 2);
     </div>
   </div>
 
-  {recent.length > 0 && (
-    <section class="recent">
-      <h2 class="display recent-h">recent notes</h2>
-      <div class="list">{recent.map((p, i) => <PostCard post={p} index={i} />)}</div>
-    </section>
-  )}
+  <Fragment set:html="<!--@if:recent-->" />
+  <section class="recent">
+    <h2 class="display recent-h">recent notes</h2>
+    <div class="list"><Fragment set:html="<!--@rows-->" /></div>
+  </section>
+  <Fragment set:html="<!--@endif:recent-->" />
+  <RowTemplate />
 </Site>
 
 <style>

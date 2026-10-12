@@ -17,6 +17,28 @@ local secrets. Setting `ACCESS_DEV_EMAIL` there bypasses the Cloudflare Access g
 for requests on `localhost`/`127.0.0.1` only, so you can open `/admin` locally without
 a real Access login.
 
+## Blog posts
+
+Posts live in D1 (`posts` table), not in the repo. The Worker renders `/`, `/blog/`,
+`/blog/<slug>/` and `/about/` per request by filling the templates Astro builds
+(`apps/web`, `__PLACEHOLDER__` values and `<!--@...-->` blocks) with rows from D1,
+so publishing a post needs no build or deploy. Logic: `apps/api/src/pages`.
+
+Write the post as markdown with frontmatter (`title`, `description`, `date`
+YYYY-MM-DD, `category` code|games|builds, optional `draft: true`), then:
+
+    bun run posts publish path/to/my-post.md --remote   # live at /blog/my-post/
+    bun run posts publish path/to/my-post.md            # local dev database only
+    bun run posts list --remote
+    bun run posts delete my-post --remote
+
+The slug is the file name (override with `--slug`). Publishing the same slug again
+updates the post. Markdown is rendered once, at publish time, with the same Shiki
+`github-dark` highlighting; both the markdown and the HTML are stored.
+
+Under `astro dev` (:4321) those pages show their raw placeholders. To see them with
+posts, use the Worker (`bun run --filter @gartha/api dev`, :8787) after `bun run build`.
+
 ## Test / build / deploy
 
     bun run test            # turbo run test: api (vitest 4 + @cloudflare/vitest-pool-workers),

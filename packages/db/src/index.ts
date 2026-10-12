@@ -2,6 +2,7 @@ import { drizzle } from "drizzle-orm/d1";
 import * as schema from "./schema";
 
 export * from "./schema";
+export * from "./posts";
 
 export type ReportItem = {
   kind: "reply" | "bill" | "info";
@@ -25,3 +26,5 @@ export type Db = ReturnType<typeof createDb>;
 export function rowToReport(row: typeof schema.reports.$inferSelect): Report {
   return { ...row, items: JSON.parse(row.items) as ReportItem[] };
 }
+
+export type Post = typeof schema.posts.$inferSelect;

@@ -20,3 +20,18 @@ export const jobRuns = sqliteTable("job_runs", {
   error: text("error"),
   trigger: text("trigger", { enum: ["cron", "manual"] }).notNull(),
 });
+
+export const posts = sqliteTable("posts", {
+  slug: text("slug").primaryKey(),
+  title: text("title").notNull(),
+  description: text("description").notNull(),
+  date: text("date").notNull(), // YYYY-MM-DD
+  category: text("category", { enum: ["code", "games", "builds"] }).notNull(),
+  featured: integer("featured", { mode: "boolean" }).notNull().default(false),
+  draft: integer("draft", { mode: "boolean" }).notNull().default(false),
+  bodyMd: text("body_md").notNull(),
+  bodyHtml: text("body_html").notNull(),
+  words: integer("words").notNull(),
+  minutes: integer("minutes").notNull(),
+  updatedAt: text("updated_at").notNull(),
+});
